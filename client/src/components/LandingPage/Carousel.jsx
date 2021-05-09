@@ -17,20 +17,26 @@ export default function InfoPlanes() {
         let { data: news, error } = await supabase.from('news').select('*');
        
         setNews(news)
+        console.log(news)
     };
     fetchNews();
   },[]);
 
 
    const [currCard, setCurrCard] = useState(0)
- 
+
+   if(news.length === 0){
+    return <h1>Loading</h1>
+  }
   const leftNeww= news[currCard > 1 ? currCard - 1 : news.length - 1]
+  console.log( 'leftNeww', leftNeww)
   const neww = news[currCard]
   const rightNeww = news[currCard < news.length - 1 ? currCard + 1 : 0]
 
   const forward = () => (currCard < news.length - 1 ? setCurrCard(currCard + 1) : setCurrCard(0))
   const back = () => (currCard > 0 ? setCurrCard(currCard - 1) : setCurrCard(news.length - 1)) 
 
+ 
   return (
     <div className={Styles.carousel} >
       
