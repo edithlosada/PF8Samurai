@@ -1,8 +1,5 @@
 import React from 'react';
 import { Route } from 'react-router-dom';
-<<<<<<< HEAD
-import LandingP from './LandingP/LandingP.jsx';
-=======
 import LandingPage from './LandingPage/LandingPage';
 import NavBar from './NavBar/navBar.jsx';
 import Footer from './Footer/Footer.jsx';
@@ -11,16 +8,10 @@ import Login from './Login/Login.jsx';
 import AdminHome from './AdminHome/AdminHome.jsx';
 import FaqsPage from './Faqs/FaqsPage.jsx';
 import ContactForm from './ContactForm/ContactForm.jsx';
->>>>>>> porSiSeRompeTodo
 
 function App() {
     const firebase = useFirebaseApp();
     return (
-<<<<<<< HEAD
-        <React.Fragment>
-            <Route exact path='/' component={LandingP} />
-        </React.Fragment>
-=======
         <>
             <Route path='/' component={NavBar} />
             <Route exact path='/' component={LandingPage} />
@@ -33,7 +24,6 @@ function App() {
             <Route exact path='/asociate' component={ContactForm} />
             <Route path='/' component={Footer} />
         </>
->>>>>>> porSiSeRompeTodo
     );
 }
 
