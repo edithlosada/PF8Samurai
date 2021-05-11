@@ -12,15 +12,23 @@ export default function NewBenef() {
   let addedben = useSelector(state => state.addedbenefs);
   let sended = useSelector(state => state.sended);
 
+
+  useEffect(() => {
+    if (newbenefs.length) {
+      console.log(newbenefs);
+      // Guarda el arreglo de benefeficios en el store para el 
+      // el componente padre.
+      dispatch(addNpBen(newbenefs));  // <-----
+      console.log(`Nuevos beneficios:`, newbenefs);
+    }
+  }, [newbenefs]);
+
   // Cuando envía el formulario manda el arreglo de
   // nuevos beneficios al store.
   useEffect(() => {
     if (sended) {
 
-      // Guarda el arreglo de benefeficios en el store para el 
-      // el componente padre.
-      dispatch(addNpBen(newbenefs));  // <-----
-      console.log(`Beneficios:`, newbenefs);
+
 
       // Función que postea los nuevos beneficios en la
       // base de datos.
@@ -56,13 +64,14 @@ export default function NewBenef() {
       setNewbenef({ benefit_title: '', benefit_description: '' });
       setNewbenefs([]);
     }
+
   }, [addedben]);
 
   function handleChange(e) {
     let { target } = e;
     let { value, name } = target;
     setNewbenef({ ...newbenef, [name]: value });
-    console.log(`estado:`, newbenef);
+    // console.log(`estado:`, newbenef);
     return;
   }
 

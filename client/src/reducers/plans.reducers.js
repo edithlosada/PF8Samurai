@@ -4,8 +4,8 @@ import {
 
 const initialState = {
   //------New plan------
-  npbensel: [],
-  addedbenefs: [],
+  npbensel: [],// Arreglo de beneficios seleccionados
+  addedbenefs: [],// Arreglo de beneficios nuevos agregados
   sended: false,
 };
 

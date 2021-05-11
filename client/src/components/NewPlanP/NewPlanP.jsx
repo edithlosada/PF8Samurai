@@ -17,27 +17,43 @@ export default function NewPlanP() {
   const dispatch = useDispatch();
 
   // CAMBIAR A OBJETO
-  let [pname, setPname] = useState('');
-  let [price, setPrice] = useState('');
+
+  let [newPlan, setNewPlan] = useState({ description: '', price: '' });
+  let [errors, setErrors] = useState({
+    description: '',
+    price: '',
+    benefits: ''
+  })
+
 
   let handleChange = (e) => {
-    let item = e.target.name;
-    switch (item) {
-      case 'pname':
-        setPname(e.target.value);
-        break;
-      case 'price':
-        setPrice(e.target.value);
-        break;
-      default:
-        break;
-    }
+    // e.preventDefault();
+    let { name, value, type } = e.target;
+    setNewPlan({ ...newPlan, [name]: value })
+    return;
   }
 
-  let sbenefsids = useSelector(state => state.npbensel);
+
+
+  let handleBlur = (e) => {
+    let itmname = e.target.name;
+    let value = e.target.value;
+    let error = '';
+    switch (itmname) {
+      case 'description': error = 'Debe ingresar un nombre de plan' 
+        break;
+      case 'price': error = 'Debe ingresar un precio'
+        break;
+      default: error = '';
+        break;
+    }
+    if (!value.length) setErrors({ ...errors, [itmname]:error});
+    else setErrors({ ...errors, [itmname]:''})
+  }
+
+  let sbenefs = useSelector(state => state.npbensel);
   let nbenefs = useSelector(state => state.addedbenefs);
   let sended = useSelector(state => state.sended);
-  let [newplan, setNewplan] = useState(null);
 
   // [{ "id_benefit": 1, "benefit_description": "Internación Gratuita" },{}]
 
@@ -48,74 +64,41 @@ export default function NewPlanP() {
   }
 
   useEffect(() => {
-    console.log(sbenefsids)
-  }, [sbenefsids]);
+    console.log(sbenefs)
+  }, [sbenefs]);
 
   // Cuando presione guardar el formulario, sended pasa a "true"
   // se dispara esto que limpia el estado local de beneficios seleccionados.
   useEffect(() => {
     if (sended) {
-      let benefits = sbenefsids;
+
+
+
+
+
+      let benefits = sbenefs;
       if (nbenefs.length !== 0) {
-        benefits = sbenefsids.concat(nbenefs);
+        // crear a la base beneficios nuevos.
+        benefits = sbenefs.concat(nbenefs);
       }
+
+
+
       // let Plan = { description: pname, price, benefits, createdAt: "2021-05-07T19:12:24+00:00", modifiedAt: "2021-05-07T19:12:24+00:00" };
-      let Plan = { description: pname, price, benefits };
-      // console.log(Plan);
-      setNewplan(Plan);
+      let Plan = { ...newPlan, price: parseInt(newPlan.price) };
+      console.log('plan', Plan);
+      // crear a la base el nuevo plan (let newPlan)
+
+      //setear la relacion plan beneficios todos id_plan --- id_benefit.
 
       // Una vez que hace lo que tiene que hacer setea sended en false.
       dispatch(sendedNpForm(false));// state.sended = false
 
-
-    }
-  }, [sended, pname, price, sbenefsids, nbenefs, dispatch]);
-
-  // Cuando se carga el nuevo plan lo postea, guarda en base de datos y luego limpia
-  useEffect(() => {
-
-    if (newplan) {
-      console.log(newplan) // <---{description: "Integra 100", price: "3000", benefits: [id1,id2]}
       alert('agregaste plan');
-      // Limpia
-      setPname('');
-      setPrice('');
-      //       setPrice('');
-      //     async function postPlan(newplan) {
+      setNewPlan({ description: '', price: '' })
 
-      //       //----------------------------
-      //       // let { data: plan, error: errorPlan } = await supabase
-      //       //   .from('plans')
-      //       //   .insert([
-      //       //     {
-      //       //       id_plan: 105,
-      //       //       description: newplan.description,
-      //       //       price: newplan.price,
-      //       //     },
-      //       //   ]);
-      //       // //----------------------------
-      //       // console.log(`este es el :`,plan);
-
-
-      //       // Acá va el post a la base de datos
-      //       // CREAR NUEVO PLAN
-
-      //       // CREAR NUEVOS BENEFICIOS
-
-      //       // VINCULAR BENEFICIOS PARA ESE PLAN EN LA TABLA INTERMEDIA
-
-      //       setPname('');
-      //       setPrice('');
-      //       setNewplan(null);
-      //       dispatch(saveNpBenefSel([]));// state.npbensel
-      //       // dispatch(addNpBen([])); // state.addedbenefs
-      //       dispatch(sendedNpForm(false));// state.sended
-      //       return;
-      //     }
-
-      //     // postPlan(newplan);
     }
-  }, [newplan, dispatch])
+  }, [sended, sbenefs, nbenefs, dispatch]);
 
   return (
     <div className="np_page">
@@ -131,24 +114,29 @@ export default function NewPlanP() {
               id="input_name"
               type="text"
               className="np_nameinput"
-              value={pname}
-              name='pname'
+              value={newPlan.description}
+              name='description'
               placeholder="Nombre del plan"
-              onChange={handleChange}>
+              onChange={handleChange}
+              onBlur={handleBlur}>
             </input>
+            {errors.description && <p>{errors.description}</p>}
             <input
               id="input_name"
               type="text"
               className="np_priceinput"
-              value={price}
+              value={newPlan.price}
               name='price'
               placeholder="Importe mensual"
-              onChange={handleChange}>
+              onChange={handleChange}
+              onBlur={handleBlur}>
             </input>
+            {errors.price && <p>{errors.price}</p>}
           </div>
           <div className="np_selectArea">
             <MultiSelectBenef />
             <NewBenef />
+            {errors.benefits && <p>{errors.benefits}</p>}
           </div>
           <div className="np_button-area">
             <button className="np_button" type="submit">Guardar</button>

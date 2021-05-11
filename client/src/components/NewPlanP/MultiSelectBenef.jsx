@@ -29,7 +29,7 @@ export default function MultiSelectBenef() {
     let { data: benefits } = await supabase
       .from('benefits')
       .select('*')
-    console.log(benefits)
+    // console.log(benefits)
     //[{"id_benefit": 1, "benefit_description": "Internación Gratuita"},{},{}]
     setBenefSupa(benefits)
   }
