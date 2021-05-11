@@ -17,6 +17,19 @@
 
 #benef_title{
   width: 588px;
+  border: none;
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+  border-bottom-color: hsl(0, 0%, 80%);
+}
+
+#input_description{
+  /* width: 588px; */
+  border: none;
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+  border-bottom-color: hsl(0, 0%, 80%);
+  padding-top: 15px;
 }
 .np_nbeneffirst{
   width: 100%;
@@ -24,6 +37,8 @@
   flex-direction: row;
   align-items: center;
   border-bottom-color:hsl(0, 0%, 80%);
+
+
 }
 
 .np_nbcont{
@@ -53,6 +68,7 @@
   border-bottom-color: red;
   border-style: solid;
   border-width: 1px; */
+  border:none;
 }
 
 .np_ben_cont{
