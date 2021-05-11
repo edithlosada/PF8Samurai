@@ -73,17 +73,17 @@ export default function NewPlanP() {
 
         console.log(newplan) // <---
         //----------------------------
-        let { data: plan, error: errorPlan } = await supabase
-          .from('plans')
-          .insert([
-            {
-              id_plan: 105,
-              description: newplan.description,
-              price: newplan.price,
-            },
-          ]);
-        //----------------------------
-        console.log(`este es el :`,plan);
+        // let { data: plan, error: errorPlan } = await supabase
+        //   .from('plans')
+        //   .insert([
+        //     {
+        //       id_plan: 105,
+        //       description: newplan.description,
+        //       price: newplan.price,
+        //     },
+        //   ]);
+        // //----------------------------
+        // console.log(`este es el :`,plan);
         
 
         // Acá va el post a la base de datos
@@ -102,14 +102,14 @@ export default function NewPlanP() {
         return;
       }
 
-      postPlan(newplan);
+      // postPlan(newplan);
     }
   }, [newplan, dispatch])
 
   return (
     <div className="np_page">
       {/* <AdminNav/> */}
-      <h3>Esta es la página del administrador</h3>
+      <h6>Esta es la página del administrador</h6>
       <div className="np_form">
         <h4> Beneficios del nuevo plan</h4>
         <hr className="sep1" />

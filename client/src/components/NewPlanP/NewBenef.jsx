@@ -6,7 +6,7 @@ import { addNpBen } from '../../actions/plans.actions';
 export default function NewBenef() {
   let dispatch = useDispatch();
 
-  let [newbenef, setNewbenef] = useState('');
+  let [newbenef, setNewbenef] = useState({ benefit_title: '', benefit_description: '' });
   let [newbenefs, setNewbenefs] = useState([]);
 
   let addedben = useSelector(state => state.addedbenefs);
@@ -16,24 +16,32 @@ export default function NewBenef() {
   // nuevos beneficios al store.
   useEffect(() => {
     if (sended) {
-      dispatch(addNpBen(newbenefs));
-      async function postNewBenef(newplan) {
 
-      }
-      newbenef.map(e => {
+      // Guarda el arreglo de benefeficios en el store para el 
+      // el componente padre.
+      dispatch(addNpBen(newbenefs));  // <-----
+      console.log(`Beneficios:`,newbenefs);
+
+      // Función que postea los nuevos beneficios en la
+      // base de datos.
+      async function postNewBenefs(newbenefs) {
+
+        // let ArrObjBenefs = newbenefs.map( b => {
+        // newbenefs.map
 
         //   //----------------------------
-        //   let { data: benefits, error: errorPlan } = await supabase
+        //   let { data: benefits, error: errorBenef } = await supabase
         //   .from('benefits')
         //   .insert([
         //     {
-        //       id_benefit: 11,
         //       benefit_description: newplan.description,
-        //       price: newplan.price,
+        //       benefit_description: newplan.description,
         //     },
         //   ]);
         // //----------------------------
-      })
+        // })
+      }
+
     }
   }, [sended, newbenefs, dispatch]);
 
@@ -43,28 +51,32 @@ export default function NewBenef() {
   useEffect(() => {
     if (addedben) {
 
-      setNewbenef('');
+      setNewbenef({ benefit_title: '', benefit_description: '' });
       setNewbenefs([]);
     }
   }, [addedben]);
 
   function handleChange(e) {
-    setNewbenef(e.target.value);
+    let { target } = e;
+    let { value, name } = target;
+    setNewbenef({ ...newbenef, [name]: value });
+    console.log(`estado:`, newbenef);
+    return;
   }
 
   // Función que agrega un beneficio a la selección
   function handleClickPlus(e) {
-    if (newbenef) {
+    if (newbenef.benefit_title && newbenef.benefit_description) {
       setNewbenefs([...newbenefs, newbenef]);//ojo
-      setNewbenef('');
+      setNewbenef({ benefit_title: '', benefit_description: '' });
       console.log(`agregué ${newbenef}`)
     }
     return;
   }
 
   // Función que quita un beneficio de la selección
-  function removeItem(item) {
-    let newItems = newbenefs.filter(e => e !== item);
+  function removeItem(titulo) {
+    let newItems = newbenefs.filter(e => e.benefit_title !== titulo);
     setNewbenefs(newItems);
     return;
   }
@@ -78,6 +90,9 @@ export default function NewBenef() {
     return;
   }
 
+
+
+
   return (
     <div className="np_ben_form">
       <div className="np_nbcont">
@@ -85,19 +100,34 @@ export default function NewBenef() {
           id="input_name"
           type="text"
           className="np_a_input"
-          value={newbenef}
-          name='newbenef'
-          placeholder="Nuevo beneficio"
+          value={newbenef.benefit_title}
+          name='benefit_title'
+          placeholder="Título del nuevo beneficio"
           onChange={handleChange}>
         </input>
+        <textarea
+          id="input_description"
+          type="text"
+          className="np_a_input"
+          value={newbenef.benefit_description}
+          name='benefit_description'
+          placeholder="Detalle del nuevo beneficio"
+          onChange={handleChange}>
+        </textarea>
         <input className="npb_plus" type="button" onClick={handleClickPlus} value={'+'} />
       </div>
       <div className="np_ben_cont">
         {newbenefs && newbenefs.map((item, index) => (
-          <button className="selbenbtn" value={item}
-            onClick={handleDelClick} key={index}>
-            {item}
-          </button>
+          // <div onClick={handleDelClick} key={index}  value={item}>
+            <button className="selbenbtn" onClick={handleDelClick} key={index}  value={item.benefit_title} >
+              {item.benefit_title}
+            </button>
+          //   <button className="selbenbtn" value={benefit_description}
+          //    key={index}>
+          //   {item}
+          // </button> 
+          // </div>
+
         ))}
       </div>
     </div>
