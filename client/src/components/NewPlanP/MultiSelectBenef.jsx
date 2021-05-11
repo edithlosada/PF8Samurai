@@ -13,6 +13,10 @@ const supabase = createClient(supabaseUrl, supabaseKey)
 export default function MultiSelectBenef() {
   let dispatch = useDispatch();
 
+
+    // Guarda en sended el estado de envio del formulario
+    const sended = useSelector(state => state.sended);
+
   // Estado donde voy a guardar los beneficios traidos desde la base
   // de datos para poner en el selector.
   // [{ "id_benefit": 1, "benefit_description": "Internación Gratuita" },{}]
@@ -32,7 +36,8 @@ export default function MultiSelectBenef() {
 
   // Carga los beneficios a usar en el selector
   useEffect(() => {
-    getBenefAsync()
+    console.log(sended);
+    getBenefAsync();
   }, [])
 
   // -------------------------------------------------------------
@@ -104,8 +109,7 @@ export default function MultiSelectBenef() {
     // console.log(sbenef)
   }, [benefsSelectedId, dispatch]);
 
-  // Guarda en sended el estado de envio del formulario
-  const sended = useSelector(state => state.sended);
+
 
   // Cuando presione guardar el formulario, sended pasa a "true"
   // se dispara esto que limpia el estado local de beneficios seleccionados.

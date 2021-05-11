@@ -12,7 +12,7 @@ export default function NewBenef() {
   let addedben = useSelector(state => state.addedbenefs);
   let sended = useSelector(state => state.sended);
 
-  // Cuando envía el formulario manda el arreglo de 
+  // Cuando envía el formulario manda el arreglo de
   // nuevos beneficios al store.
   useEffect(() => {
     if (sended) {
@@ -20,7 +20,7 @@ export default function NewBenef() {
       // Guarda el arreglo de benefeficios en el store para el 
       // el componente padre.
       dispatch(addNpBen(newbenefs));  // <-----
-      console.log(`Beneficios:`,newbenefs);
+      console.log(`Beneficios:`, newbenefs);
 
       // Función que postea los nuevos beneficios en la
       // base de datos.
@@ -41,8 +41,10 @@ export default function NewBenef() {
         // //----------------------------
         // })
       }
-
     }
+
+    // Ojo!! cuando guarde 
+
   }, [sended, newbenefs, dispatch]);
 
 
@@ -95,9 +97,11 @@ export default function NewBenef() {
 
   return (
     <div className="np_ben_form">
-      <div className="np_nbcont">
+      {/* <div className="np_nbcont"> */}
+      <div className="np_nbeneffirst">
+
         <input
-          id="input_name"
+          id="benef_title"
           type="text"
           className="np_a_input"
           value={newbenef.benefit_title}
@@ -105,23 +109,24 @@ export default function NewBenef() {
           placeholder="Título del nuevo beneficio"
           onChange={handleChange}>
         </input>
-        <textarea
-          id="input_description"
-          type="text"
-          className="np_a_input"
-          value={newbenef.benefit_description}
-          name='benefit_description'
-          placeholder="Detalle del nuevo beneficio"
-          onChange={handleChange}>
-        </textarea>
         <input className="npb_plus" type="button" onClick={handleClickPlus} value={'+'} />
       </div>
+      <textarea
+        id="input_description"
+        type="text"
+        className="np_a_input"
+        value={newbenef.benefit_description}
+        name='benefit_description'
+        placeholder="Detalle del nuevo beneficio"
+        onChange={handleChange}>
+      </textarea>
+      {/* </div> */}
       <div className="np_ben_cont">
         {newbenefs && newbenefs.map((item, index) => (
           // <div onClick={handleDelClick} key={index}  value={item}>
-            <button className="selbenbtn" onClick={handleDelClick} key={index}  value={item.benefit_title} >
-              {item.benefit_title}
-            </button>
+          <button className="selbenbtn" onClick={handleDelClick} key={index} value={item.benefit_title} >
+            {item.benefit_title}
+          </button>
           //   <button className="selbenbtn" value={benefit_description}
           //    key={index}>
           //   {item}

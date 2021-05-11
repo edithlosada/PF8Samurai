@@ -63,46 +63,57 @@ export default function NewPlanP() {
       let Plan = { description: pname, price, benefits };
       // console.log(Plan);
       setNewplan(Plan);
+
+      // Una vez que hace lo que tiene que hacer setea sended en false.
+      dispatch(sendedNpForm(false));// state.sended = false
+
+
     }
   }, [sended, pname, price, sbenefsids, nbenefs, dispatch]);
 
-  // Cuando se carga el nuevo plan lo postea y luego limpia
+  // Cuando se carga el nuevo plan lo postea, guarda en base de datos y luego limpia
   useEffect(() => {
+
     if (newplan) {
-      async function postPlan(newplan) {
+      console.log(newplan) // <---{description: "Integra 100", price: "3000", benefits: [id1,id2]}
+      alert('agregaste plan');
+      // Limpia
+      setPname('');
+      setPrice('');
+      //       setPrice('');
+      //     async function postPlan(newplan) {
 
-        console.log(newplan) // <---
-        //----------------------------
-        // let { data: plan, error: errorPlan } = await supabase
-        //   .from('plans')
-        //   .insert([
-        //     {
-        //       id_plan: 105,
-        //       description: newplan.description,
-        //       price: newplan.price,
-        //     },
-        //   ]);
-        // //----------------------------
-        // console.log(`este es el :`,plan);
-        
+      //       //----------------------------
+      //       // let { data: plan, error: errorPlan } = await supabase
+      //       //   .from('plans')
+      //       //   .insert([
+      //       //     {
+      //       //       id_plan: 105,
+      //       //       description: newplan.description,
+      //       //       price: newplan.price,
+      //       //     },
+      //       //   ]);
+      //       // //----------------------------
+      //       // console.log(`este es el :`,plan);
 
-        // Acá va el post a la base de datos
-        // CREAR NUEVO PLAN
 
-        // CREAR NUEVOS BENEFICIOS
+      //       // Acá va el post a la base de datos
+      //       // CREAR NUEVO PLAN
 
-        // VINCULAR BENEFICIOS PARA ESE PLAN EN LA TABLA INTERMEDIA
+      //       // CREAR NUEVOS BENEFICIOS
 
-        setPname('');
-        setPrice('');
-        setNewplan(null);
-        dispatch(saveNpBenefSel([]));// state.npbensel
-        // dispatch(addNpBen([])); // state.addedbenefs
-        dispatch(sendedNpForm(false));// state.sended
-        return;
-      }
+      //       // VINCULAR BENEFICIOS PARA ESE PLAN EN LA TABLA INTERMEDIA
 
-      // postPlan(newplan);
+      //       setPname('');
+      //       setPrice('');
+      //       setNewplan(null);
+      //       dispatch(saveNpBenefSel([]));// state.npbensel
+      //       // dispatch(addNpBen([])); // state.addedbenefs
+      //       dispatch(sendedNpForm(false));// state.sended
+      //       return;
+      //     }
+
+      //     // postPlan(newplan);
     }
   }, [newplan, dispatch])
 
