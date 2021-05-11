@@ -64,7 +64,9 @@ export default function NewPlanP() {
   }
 
   useEffect(() => {
-    console.log(sbenefs)
+    console.log(sbenefs);
+    console.log("console2",Object.values(sbenefs));
+    
   }, [sbenefs]);
 
   // Cuando presione guardar el formulario, sended pasa a "true"
@@ -100,6 +102,10 @@ export default function NewPlanP() {
     }
   }, [sended, sbenefs, nbenefs, dispatch]);
 
+const validator = ()=>  {
+    if (sbenefs.length) return true;
+    return false
+}
   return (
     <div className="np_page">
       {/* <AdminNav/> */}
@@ -139,7 +145,14 @@ export default function NewPlanP() {
             {errors.benefits && <p>{errors.benefits}</p>}
           </div>
           <div className="np_button-area">
-            <button className="np_button" type="submit">Guardar</button>
+             {validator()? 
+              <button className="np_button" type="submit">Guardar</button>
+              :<button disabled className="np_buttonD" type="submit">Guardar</button>}
+             {/* 
+             {disabled = v()}
+             validar()?classname="np_button":"np_buttonD"
+              
+             */}
           </div>
         </form>
       </div>

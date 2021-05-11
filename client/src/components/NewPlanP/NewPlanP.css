@@ -223,3 +223,7 @@ textarea{
   box-shadow: 0 0 5px 3px rgb(46 53 66 / 20%), 0 0 5px 3px rgb(46 53 66 / 20%);
   /* box-shadow: 3px 3px 15px rgb(46 53 66 / 15%), 3px 3px 15px rgb(46 53 66 / 15%); */
 }
+
+.np_buttonD{
+  opacity: 0.9;
+}
