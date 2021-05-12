@@ -1,3 +1,8 @@
+
+.all{
+  display: flex;
+  flex-direction: column;
+}
 .first {
   /*  background-color: #a6f6f1; */
   background: rgb(166, 246, 241);

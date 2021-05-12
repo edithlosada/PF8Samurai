@@ -92,7 +92,7 @@ export default function LandingPage() {
                     Todas las credenciales de tu grupo familiaren un solo lugar
                 </p>
             </div>
-            <InfoPlanes id='infoPlans' />
+                <InfoPlanes id='infoPlans' />
             <div id='contact'>
                 <ContactForm />
             </div>
