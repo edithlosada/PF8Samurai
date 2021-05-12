@@ -22,7 +22,6 @@ export default function NewPlanP() {
   const [errors, setErrors] = useState({
     description: '',
     price: '',
-    benefits: ''
   });
   const [ success, SetSuccess ] = useState('')
 
@@ -178,6 +177,7 @@ export default function NewPlanP() {
           </div>
           <div className='np_selectArea'>
             <MultiSelectBenef />
+            {!validator() && <Alert severity='warning'>Debe asiociar al menos un Beneficio!</Alert>}
             <NewBenef />
           </div>
           <div className='np_button-area'>
