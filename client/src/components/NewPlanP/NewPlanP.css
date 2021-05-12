@@ -1,9 +1,5 @@
 .np_page{
   width: 100%;
-  /* background-color: #213e3b;
-  background-color: #41aea9;
-  background-color: #a6f6f1;
-  background-color: #e8ffff; */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -41,11 +37,6 @@ hr.sep2 {
   margin: 0 0 10px 0;
 }
 
-/* .input_label{
-  width: 100%;
-  margin-bottom: 10px;
-} */
-
 .np_inputArea{
   width: 85%;
   margin-right: 0px;
@@ -56,13 +47,11 @@ hr.sep2 {
   align-items: center;  
 }
 
-
-
 .np_firstline{
   width:100%;
   display:flex;
   flex-direction: row;
-  align-items: center;
+  align-items: flex-start;
   margin-bottom: 10px;
 }
 
@@ -108,7 +97,6 @@ textarea{
   font-size: 14.5px;
   font-family: Verdana, Geneva, Tahoma, sans-serif;
   margin-bottom: 10px;
-  /* margin-left: 30px; */
   padding: 0px;
   padding-left: 14px;
   background-color:hsl(0, 0%, 100%);
@@ -120,40 +108,6 @@ textarea{
   align-items: center;
   text-justify: center;
 }
-
-/* .np_forminput{
-  width: 100%;
-  box-sizing: border-box;
-  min-height: 35px;
-  font-size: 14.5px;
-  font-family: Verdana, Geneva, Tahoma, sans-serif;
-  margin-bottom: 10px;
-  padding: 0px;
-  padding-left: 14px;
-  background-color:hsl(0, 0%, 100%);
-  border-color:hsl(0, 0%, 80%);
-  border-radius: 4px;
-  border-style: solid;
-  border-width: 1px;
-  display: flex;
-  align-items: center;
-  text-justify: center;
-} */
-
-/* .np_textinput{
-  width: 100%;
-  box-sizing: border-box;
-  font-family: Verdana, Geneva, Tahoma, sans-serif;
-  padding-top: 8px;
-  margin-bottom: 10px;
-  padding-left: 15px;
-  font-size: 14.5px;
-  background-color:hsl(0, 0%, 100%);
-  border-color:hsl(0, 0%, 80%);
-  border-radius: 4px;
-  border-style: solid;
-  border-width: 1px;
-} */
 
 .np_selectArea{
   width: 100%;
@@ -234,16 +188,11 @@ textarea{
   height: 33px;
   text-align: center;
   font-size: 1em ;
-  border: 1px solid;
+ border: 1px solid;
   border-radius: 5px;
-  border-color: #8cbdc6;
+  border-color: rgb(182, 182, 182);
   font-family: Nunito;
-  color: rgb(61, 60, 60);
+  color: rgb(182, 182, 182);
   font-weight: 600;
-  background: -webkit-linear-gradient(top, #9de8f7 0%, #11777e 100%);
-  box-shadow: 0 2px 2px 0 rgb(46 53 66 / 10%), 0 5px 25px 0 rgb(46 53 66 / 5%);
-  border-radius: 5px;
-  overflow: hidden;
-  position: relative;
   opacity: 0.9;
 }

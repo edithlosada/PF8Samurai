@@ -34,20 +34,32 @@ export default function NewPlanP() {
   let handleBlur = (e) => {
     let itmname = e.target.name;
     let value = e.target.value;
-    let error = '';
+
     switch (itmname) {
       case 'description':
-        error = 'Debe ingresar un nombre de plan';
+        if (!value.trim().length){
+          console.log('toy acá 1')
+          setErrors({ ...errors, description: 'Debe ingresar un nombre de plan' });
+        }
         break;
       case 'price':
-        error = 'Debe ingresar un precio';
+        if(!value || value <= 0){
+          console.log('toy acá 2 (',value)
+          setErrors({ ...errors, price: 'Debe ingresar un precio válido positivo.' });
+          console.log(errors)
+        }
+        // if (!parseInt(value) <= 0){
+        //   console.log('toy acá 2')
+        //   setErrors({ ...errors, [itmname]: 'Debe ingresar un precio válido positivo.' });
+        // }
+        // if (!sbenefs.length){ 
+        //   setErrors({ ...errors, benefits: 'Debe seleccionar al menos un un beneficio' });
+        // } 
         break;
       default:
-        error = '';
         break;
     }
-    if (!value.length) setErrors({ ...errors, [itmname]: error });
-    else setErrors({ ...errors, [itmname]: '' });
+
   };
 
   let sbenefs = useSelector((state) => state.npbensel); // Beneficios preexistentes seleccionados
@@ -80,7 +92,7 @@ export default function NewPlanP() {
       console.log(nben);
       const { data, error } = await supabase.from('benefits').insert([
         {
-          benefit_title: nben.benefit_title,
+          benefit_title: nben.benefit_title.toLowerCase(),
           benefit_description: nben.benefit_description,
         },
         
@@ -134,7 +146,7 @@ export default function NewPlanP() {
   }, [sended,dispatch]);
 
   const validator = () => {
-    if (sbenefs.length) return true;
+    if (sbenefs.length&&Object.values(errors).every(e => !e.length)) return true;
     return false;
   };
   return (
@@ -142,7 +154,7 @@ export default function NewPlanP() {
       {/* <AdminNav/> */}
       <h6>Esta es la página del administrador</h6>
       <div className='np_form'>
-        <h4> Beneficios del nuevo plan</h4>
+        <h4> Creación de un nuevo plan</h4>
         <hr className='sep1' />
         <hr className='sep2' />
         <form className='np_inputArea' onSubmit={handleSubmit}>
@@ -176,8 +188,8 @@ export default function NewPlanP() {
           </div>
           <div className='np_selectArea'>
             <MultiSelectBenef />
-            <NewBenef />
             {errors.benefits && <p className='np_errormsj'>{errors.benefits}</p>}
+            <NewBenef />
           </div>
           <div className='np_button-area'>
             {validator() ? (
