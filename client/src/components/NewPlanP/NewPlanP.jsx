@@ -177,7 +177,7 @@ export default function NewPlanP() {
           </div>
           <div className='np_selectArea'>
             <MultiSelectBenef />
-            {!validator() && <Alert severity='warning'>Debe asiociar al menos un Beneficio!</Alert>}
+            {!validator() && <Alert severity='info'>Debe asiociar al menos un Beneficio!</Alert>}
             <NewBenef />
           </div>
           <div className='np_button-area'>
