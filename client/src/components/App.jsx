@@ -9,23 +9,25 @@ import AdminHome from './AdminHome/AdminHome.jsx';
 import FaqsPage from './Faqs/FaqsPage.jsx';
 import ContactForm from './ContactForm/ContactForm.jsx';
 import NewPlanP from './NewPlanP/NewPlanP.jsx';
+import HorizontalLabelPositionBelowStepper from './RegStepForm/Regcontainer';
 
 function App() {
     const firebase = useFirebaseApp();
     return (
-        <>
-            <Route path='/' component={NavBar} />
-            <Route exact path='/' component={LandingPage} />
-            <Route path='/faqs' component={FaqsPage} />
-            <Route path='/login' render={() => <Login firebase={firebase} />} />
-            <Route
-                path='/:id/admin'
-                render={() => <AdminHome firebase={firebase} />}
-            />
-            <Route exact path='/asociate' component={ContactForm} />
-            <Route exact path='/NewPlanP' component={NewPlanP} />
-            <Route path='/' component={Footer} />
-        </>
+        // <>
+        //     <Route path='/' component={NavBar} />
+        //     <Route exact path='/' component={LandingPage} />
+        //     <Route path='/faqs' component={FaqsPage} />
+        //     <Route path='/login' render={() => <Login firebase={firebase} />} />
+        //     <Route
+        //         path='/:id/admin'
+        //         render={() => <AdminHome firebase={firebase} />}
+        //     />
+        //     <Route exact path='/asociate' component={ContactForm} />
+        //     <Route exact path='/NewPlanP' component={NewPlanP} />
+        //     <Route path='/' component={Footer} />
+        // </>
+        <HorizontalLabelPositionBelowStepper/>
     );
 }
 
