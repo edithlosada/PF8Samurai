@@ -136,7 +136,7 @@ export default function MultiSelectBenef() {
             <option
               key={index}
               value={`[{"id":"${benef.id_benefit}","desc":"${benef.benefit_description}"}]`}
-            >{benef.benefit_description}</option>
+            >{benef.benefit_title}</option>
           ))}
         </select>
         <div className="benefcont">

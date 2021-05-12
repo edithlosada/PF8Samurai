@@ -60,6 +60,7 @@ export default function NewPlanP() {
   let handleSubmit = (e) => {
     e.preventDefault();
     dispatch(sendedNpForm(true));// state.sended = true
+    console.log("vos me estas diciendo",newPlan,"y encima queres que tenga",sbenefs,nbenefs)
     e.target.reset();
   }
 
@@ -74,22 +75,17 @@ export default function NewPlanP() {
   useEffect(() => {
     if (sended) {
 
-
-
-
-
       let benefits = sbenefs;
       if (nbenefs.length !== 0) {
         // crear a la base beneficios nuevos.
         benefits = sbenefs.concat(nbenefs);
       }
 
-
-
       // let Plan = { description: pname, price, benefits, createdAt: "2021-05-07T19:12:24+00:00", modifiedAt: "2021-05-07T19:12:24+00:00" };
-      let Plan = { ...newPlan, price: parseInt(newPlan.price) };
-      console.log('plan', Plan);
+      let plan = { ...newPlan, price: parseInt(newPlan.price) };
+      console.log('plan', plan);
       // crear a la base el nuevo plan (let newPlan)
+      
 
       //setear la relacion plan beneficios todos id_plan --- id_benefit.
 
@@ -100,7 +96,7 @@ export default function NewPlanP() {
       setNewPlan({ description: '', price: '' })
 
     }
-  }, [sended, sbenefs, nbenefs, dispatch]);
+  }, []);
 
 const validator = ()=>  {
     if (sbenefs.length) return true;
@@ -114,7 +110,7 @@ const validator = ()=>  {
         <h4> Beneficios del nuevo plan</h4>
         <hr className="sep1" />
         <hr className="sep2" />
-        <form method="post" action="http://localhost:300" className="np_inputArea" onSubmit={handleSubmit}>
+        <form className="np_inputArea" onSubmit={handleSubmit}>
           <div className="np_firstline">
             <input
               id="input_name"
