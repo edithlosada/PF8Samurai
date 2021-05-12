@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { addNpBen } from '../../actions/plans.actions'; 
 import './NewBenef.css';
-import { addNpBen } from '../../actions/plans.actions';
 
-export default function NewBenef() {
+export default function NewBenef(props) {
   let dispatch = useDispatch();
 
   let [newbenef, setNewbenef] = useState({
@@ -68,7 +68,6 @@ export default function NewBenef() {
 
   return (
     <div className='np_ben_form'>
-      {/* <div className="np_nbcont"> */}
       <div className='np_nbeneffirst'>
         <input
           id='benef_title'
@@ -94,12 +93,11 @@ export default function NewBenef() {
         name='benefit_description'
         placeholder='Detalle del nuevo beneficio'
         onChange={handleChange}
+        onBlur={props.handleBlur}
       ></textarea>
-      {/* </div> */}
       <div className='np_ben_cont'>
         {newbenefs &&
           newbenefs.map((item, index) => (
-            // <div onClick={handleDelClick} key={index}  value={item}>
             <button
               className='selbenbtn'
               onClick={handleDelClick}
@@ -108,11 +106,6 @@ export default function NewBenef() {
             >
               {item.benefit_title}
             </button>
-            //   <button className="selbenbtn" value={benefit_description}
-            //    key={index}>
-            //   {item}
-            // </button>
-            // </div>
           ))}
       </div>
     </div>

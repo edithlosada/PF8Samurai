@@ -3,8 +3,10 @@ import { useSelector, useDispatch } from 'react-redux';
 import MultiSelectBenef from './MultiSelectBenef';
 import NewBenef from './NewBenef';
 import { sendedNpForm } from '../../actions/plans.actions';
-import './NewPlanP.css';
 import { createClient } from '@supabase/supabase-js';
+import Alert from '@material-ui/lab/Alert';
+
+import './NewPlanP.css';
 
 // Información de la base de datos
 const supabaseUrl = 'https://qeubfsxlcvapzvjihzep.supabase.co';
@@ -16,12 +18,13 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 export default function NewPlanP() {
   const dispatch = useDispatch();
 
-  let [newPlan, setNewPlan] = useState({ description: '', price: '' });
-  let [errors, setErrors] = useState({
+  const [newPlan, setNewPlan] = useState({ description: '', price: '' });
+  const [errors, setErrors] = useState({
     description: '',
     price: '',
-    benefits: '',
+    benefits: ''
   });
+  const [ success, SetSuccess ] = useState('')
 
   let handleChange = (e) => {
     let { name, value } = e.target;
@@ -32,35 +35,23 @@ export default function NewPlanP() {
   // Función que deshabilita el botón de guardar hasta
   // que los campos estén completados.
   let handleBlur = (e) => {
-    let itmname = e.target.name;
-    let value = e.target.value;
+    const { name, value } = e.target;
+    let error;
 
-    switch (itmname) {
+    switch (name) {
       case 'description':
-        if (!value.trim().length){
-          console.log('toy acá 1')
-          setErrors({ ...errors, description: 'Debe ingresar un nombre de plan' });
-        }
+        error = !value.trim().length || !/^[a-zA-Z\s]+$/.test(value) ? 'Debe ingresar una descripción' : '';
+        setErrors({ ...errors, [name]: error })
         break;
       case 'price':
-        if(!value || value <= 0){
-          console.log('toy acá 2 (',value)
-          setErrors({ ...errors, price: 'Debe ingresar un precio válido positivo.' });
-          console.log(errors)
-        }
-        // if (!parseInt(value) <= 0){
-        //   console.log('toy acá 2')
-        //   setErrors({ ...errors, [itmname]: 'Debe ingresar un precio válido positivo.' });
-        // }
-        // if (!sbenefs.length){ 
-        //   setErrors({ ...errors, benefits: 'Debe seleccionar al menos un un beneficio' });
-        // } 
+        error = !/^[+]?([0-9]+(?:[\.][0-9]*)?|\.[0-9]+)$/.test(value) ? 'Debe ingresar un precio válido positivo' : '';
+        setErrors({ ...errors, [name]: error })
         break;
       default:
         break;
     }
+  }
 
-  };
 
   let sbenefs = useSelector((state) => state.npbensel); // Beneficios preexistentes seleccionados
   let nbenefs = useSelector((state) => state.addedbenefs);// Nuevos beneficios seleccionados
@@ -95,7 +86,7 @@ export default function NewPlanP() {
           benefit_title: nben.benefit_title.toLowerCase(),
           benefit_description: nben.benefit_description,
         },
-        
+
       ]);
       console.log(error);
       // data viene como un arreglo de beneficios con la forma:
@@ -112,7 +103,7 @@ export default function NewPlanP() {
       .insert([
         { description: newPlan.description, price: newPlan.price },
       ]);
-      console.log(error);
+    console.log(error);
     // data viene como un arreglo de beneficios con la forma:
     //[{"id_plan": 21,"description": "Superplan","price": 3000}]
     console.log('ID PLANNNNN', data);
@@ -140,18 +131,17 @@ export default function NewPlanP() {
       // Una vez que hace lo que tiene que hacer setea sended en false.
       dispatch(sendedNpForm(false)); // state.sended = false
 
-      alert('agregaste plan');
+      SetSuccess('Tu plan se agregó correctamente!');
       setNewPlan({ description: '', price: '' });
     }
-  }, [sended,dispatch]);
+  }, [sended, dispatch]);
 
   const validator = () => {
-    if (sbenefs.length&&Object.values(errors).every(e => !e.length)) return true;
+    if (sbenefs.length && Object.values(errors).every(e => !e.length)) return true;
     return false;
   };
   return (
     <div className='np_page'>
-      {/* <AdminNav/> */}
       <h6>Esta es la página del administrador</h6>
       <div className='np_form'>
         <h4> Creación de un nuevo plan</h4>
@@ -170,7 +160,7 @@ export default function NewPlanP() {
                 onChange={handleChange}
                 onBlur={handleBlur}
               ></input>
-              {errors.description && <p className='np_errormsj'>{errors.description}</p>}
+              {errors.description && <Alert severity='error' className='np_errormsj'>{errors.description}</Alert>}
             </div>
             <div className='np_fl_cont'>
               <input
@@ -183,35 +173,24 @@ export default function NewPlanP() {
                 onChange={handleChange}
                 onBlur={handleBlur}
               ></input>
-              {errors.price && <p className='np_errormsj'>{errors.price}</p>}
+              {errors.price && <Alert severity='error' className='np_errormsj'>{errors.price}</Alert>}
             </div>
           </div>
           <div className='np_selectArea'>
             <MultiSelectBenef />
-            {errors.benefits && <p className='np_errormsj'>{errors.benefits}</p>}
             <NewBenef />
           </div>
           <div className='np_button-area'>
-            {validator() ? (
-              <button className='np_button' type='submit'>
-                Guardar
+            <button
+              disabled={!validator()}
+              className={validator()? 'np_button' : 'np_buttonD'}
+              type='submit'
+            >
+              Guardar
               </button>
-            ) : (
-              <button
-                disabled
-                className='np_buttonD'
-                type='submit'
-              >
-                Guardar
-              </button>
-            )}
-            {/* 
-             {disabled = v()}
-             validar()?classname="np_button":"np_buttonD"
-              
-             */}
           </div>
         </form>
+        {success && <Alert severity='success'>{success}</Alert>}
       </div>
     </div>
   );

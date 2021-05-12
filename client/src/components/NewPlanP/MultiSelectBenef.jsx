@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import parseJson from 'parse-json';
 import { useSelector, useDispatch } from 'react-redux';
 import { createClient } from '@supabase/supabase-js';
-import './MultiSelectBenef.css';
 import { saveNpBenefSel } from '../../actions/plans.actions';
+import Alert from '@material-ui/lab/Alert';
+import parseJson from 'parse-json';
+
+import './MultiSelectBenef.css';
 
 // Información de la base de datos
 const supabaseUrl = 'https://qeubfsxlcvapzvjihzep.supabase.co';
@@ -42,6 +44,7 @@ export default function MultiSelectBenef() {
 
     // Estado de beneficios seleccionados (descripción)
     let [sbenef, setSbenef] = useState([]); //[{id:'1',desc:'Internación Gratuita'},{}]
+    const [error, SetError] = useState('')
 
     // Estado donde voy a guardar el arreglo con los ids de los
     // beneficios preexistentes seleccionados para el nuevo plan.
@@ -81,16 +84,6 @@ export default function MultiSelectBenef() {
         }
         return;
     }
-
-    //Cada vez que cambie un beneficio actualiza
-    useEffect(() => {
-        // console.log('entré acá 2');
-        // console.log(sbenef);
-    }, [sbenef]);
-    useEffect(() => {
-        // console.log('entré acá 2');
-        // console.log(benefsSelectedId);
-    }, [benefsSelectedId]);
 
     // Cuando hace click en el botón lo saca
     function handleClick(e) {
