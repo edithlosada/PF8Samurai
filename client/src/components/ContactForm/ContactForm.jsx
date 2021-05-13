@@ -107,50 +107,61 @@ function ContactForm() {
             [e.target.name]: e.target.value,
         });
         setErrors(
-            validate({
-                ...input,
-                [e.target.name]: e.target.value,
-            })
+            validate(e.target.name, e.target.value)
         );
     };
 
-    function validate(input) {
+    function validate(inputName,value) {
         const mailPattern =
             /[a-zA-Z0-9]+[.]?([a-zA-Z0-9]+)?[@][a-z]{3,9}[.][a-z]{2,5}/g;
         const namePattern = /^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$/g;
         const numberPattern = /^[0-9\b]+$/;
         let errors = {};
-        if (!namePattern.test(input.name)) {
-            errors.name = true;
-        } else {
-            errors.name = false;
-        }
 
-        if (!numberPattern.test(input.age)) {
-            errors.age = true;
-        } else {
-            errors.age = false;
-        }
-
-        if (!numberPattern.test(input.dni) || input.dni.length !== 8) {
-            errors.dni = true;
-        } else {
-            errors.dni = false;
-        }
-
-        if (
-            !numberPattern.test(input.phone_number) ||
-            input.phone_number.length < 10
-        ) {
-            errors.phone_number = true;
-        } else {
-            errors.phone_number = false;
-        }
-
-        if (!mailPattern.test(input.mail)) {
-            errors.mail = true;
-        } else {
-            errors.mail = false;
+        switch(inputName){
+            case 'name':{
+                if (!namePattern.test(value)) {
+                    errors.name = true;
+                } else {
+                    errors.name = false;
+                }
+                break;
+            }
+            case 'age':{
+                if (!numberPattern.test(value)) {
+                    errors.age = true;
+                } else {
+                    errors.age = false;
+                }  
+                break;      
+            }
+            case 'dni':{
+                if (!numberPattern.test(value) || value.length !== 8) {
+                    errors.dni = true;
+                } else {
+                    errors.dni = false;
+                }  
+                break;     
+            }
+            case 'phone_number':{
+                if (
+                    !numberPattern.test(value) ||
+                    value.length < 10
+                ) {
+                    errors.phone_number = true;
+                } else {
+                    errors.phone_number = false;
+                } 
+                break;     
+            }
+            case 'mail':{
+                if (!mailPattern.test(value)) {
+                    errors.mail = true;
+                } else {
+                    errors.mail = false;
+                }
+                break;     
+            }
         }
         return errors;
     }
