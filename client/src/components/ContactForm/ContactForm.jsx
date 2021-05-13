@@ -64,7 +64,7 @@ function ContactForm() {
     const [errorRequest, setErrorRequest] = useState(false);
     const [redirect, setRedirect] = useState(false);
 
-    const handleClickOpen = async () => {
+    const handleClickOpen = async (e) => {
         if (
             !errors.age &&
             !errors.dni &&
