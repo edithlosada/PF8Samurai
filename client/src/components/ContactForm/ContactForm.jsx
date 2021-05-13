@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
+import { createMuiTheme } from '@material-ui/core/styles';
+import { ThemeProvider } from '@material-ui/styles';
 import { Redirect } from 'react-router-dom';
+import { makeStyles } from '@material-ui/core/styles';
 import Styles from './ContactForm.module.css';
+import emailjs from 'emailjs-com'
 import LogoNav from '../../assets/logo-integra.png';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
-import { createMuiTheme } from '@material-ui/core/styles';
-import { ThemeProvider } from '@material-ui/styles';
 import Snackbar from '@material-ui/core/Snackbar';
 import Alert from '@material-ui/lab/Alert';
 import Card from '@material-ui/core/Card';
-import { makeStyles } from '@material-ui/core/styles';
 import supabase from '../../supabase.config';
 
 const theme = createMuiTheme({
@@ -72,6 +73,7 @@ function ContactForm() {
             !errors.name
         ) {
             setSuccessRequest(true);
+            sendMail(e)
             const { data, error } = await supabase.from('request_form').insert([
                 {
                     name: input.name,
@@ -153,6 +155,17 @@ function ContactForm() {
             errors.mail = false;
         }
         return errors;
+    }
+
+    function sendMail (e) {
+        e.preventDefault();
+
+    emailjs.send('service_wcpzjw7', 'template_r93a6bs', input, 'user_mgft1j53RDkaGc1EWyKNK')
+      .then((result) => {
+          console.log('resultado:',result.text);
+      }, (error) => {
+          console.log('error:',error.text);
+      });
     }
 
     const renderRedirect = () => {
