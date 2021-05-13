@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function getSteps() {
-  return ["titulo1","titulo2","titulo3","titulo4"];
+  return ["Datos del Titular","Datos de la Empresa","Declaracion Jurada","titulo4"];
 }
 
 function getStepContent(stepIndex) {
@@ -88,7 +88,7 @@ export default function HorizontalLabelPositionBelowStepper() {
               >
                 Back
               </Button>
-              <Button variant="contained" color="primary" onClick={handleNext}>
+              <Button variant="contained" color="primary" onClick={handleNext} >
                 {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
               </Button>
             </div>
