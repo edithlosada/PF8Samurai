@@ -1,10 +1,15 @@
-import { createStore, applyMiddleware } from 'redux';
+import { createStore, combineReducers, applyMiddleware } from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
-import rootReducer from '../reducers/index.reducer.js';
 import thunk from 'redux-thunk';
+import rootReducer from '../reducers/index.reducer.js';
+import reducer from '../reducers/plans.reducers.js'
 
+const allReducer = combineReducers({
+    plans: rootReducer,
+    newPlans: reducer,
+})
 const store = createStore(
-    rootReducer,
+    allReducer,
     composeWithDevTools(applyMiddleware(thunk))
 );
 

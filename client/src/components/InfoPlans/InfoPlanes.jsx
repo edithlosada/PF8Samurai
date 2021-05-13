@@ -6,9 +6,11 @@ import * as Styles from './InfoPlans.module.css';
 import { useSelector, useDispatch } from 'react-redux';
 import { getPlans } from '../../actions/getter.action';
 import { teal } from '@material-ui/core/colors';
+import { CircularProgress } from '@material-ui/core';
 
 function InfoPlanes() {
     const plans = useSelector((state) => state.allPlans);
+    
     const dispatch = useDispatch();
 
     const [currCard, setCurrCard] = useState(0);
@@ -48,7 +50,8 @@ function InfoPlanes() {
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
-    if (plans.length === 0) return <h2>Loading...</h2>;
+
+    if (!plans.length) return <CircularProgress />;
 
     return (
         <div className={Styles.carousel}>

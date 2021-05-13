@@ -6,7 +6,7 @@ function getPlans() {
     try {
       const { data: plans } = await supabase
         .from("plans")
-        .select("id_plan, price, description, benefits (benefit_description)");
+        .select("id, price, name, benefits (title)");
       dispatch({ type: GET_PLANS_BENEFITS, payload: plans });
     } catch (err) {
       console.error(err);
@@ -19,7 +19,7 @@ function getBenefits() {
     try {
       const { data: benefits } = await supabase
         .from("benefits")
-        .select("benefit_description", "id_benefit");
+        .select("id", "title", "description");
       dispatch({ type: GET_BENEFITS, payload: benefits });
     } catch (err) {
       console.error(err);

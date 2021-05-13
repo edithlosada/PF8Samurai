@@ -1,8 +1,10 @@
 import {
   SET_NP_BEN_SEL, ADD_NP_BEN, SEND_NP_FORM
-} from '../actions/actions';
+} from '../actions/plans.actions';
 
 const initialState = {
+  allPlans: [],
+  allBenefits: [],
   //------New plan------
   npbensel: [],
   addedbenefs: [],

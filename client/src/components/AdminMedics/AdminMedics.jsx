@@ -85,3 +85,4 @@ function AdminMedic() {
 }
 
 export default AdminMedic;
+
