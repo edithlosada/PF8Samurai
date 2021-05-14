@@ -12,11 +12,11 @@ function AdminMedic() {
     const [listMedics, setListMedics] = useState([]);
     const [editActive, setEditActive] = useState(false);
 
-    const fetchMedics = async () => {
+   const fetchMedics = async () => {
         const { data: medics, error: errorFetchMedics } = await supabase
             .from('medics')
             .select(
-                'dni, name, age, lastname, medic_license, email, phone_number, age, profilePic, medical_specialities (name)'
+                'dni, name, lastname, medic_license, email, phone_number, birthdate, state, profilePic, medical_specialities (name)'
             );
         if (errorFetchMedics) return console.log(errorFetchMedics);
         setListMedics(medics);
@@ -53,7 +53,6 @@ function AdminMedic() {
                         <p>Nombre: {el.name}</p>
                         <p>Apellido: {el.lastname}</p>
                         <p>Matricula: {el.medic_license}</p>
-                        <p>Edad {el.age}</p>
                         <p className={styles.email}>Email: {el.email}</p>
                         <p>Especialidades:</p>
                         <ul>
