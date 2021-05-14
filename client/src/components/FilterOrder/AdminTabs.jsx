@@ -6,6 +6,9 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
+import TextField from '@material-ui/core/TextField';
+import MedicsTable from "./MedicsTable"
+import AdminMedics from "../AdminMedics/AdminMedics"
 
 function TabPanel(props) {
     const { children, value, index } = props;
@@ -15,7 +18,7 @@ function TabPanel(props) {
             role="tabpanel"
             hidden={value !== index}
             id={`simple-tabpanel-${index}`}
-            aria-labelledby={`simple-tab-${index}`}
+            aria-labelledby={`wrapped-tab-${index}`}
         >
             {value === index && (
                 <Box p={3}>
@@ -34,7 +37,7 @@ TabPanel.propTypes = {
 
 function a11yProps(index) {
     return {
-        id: `simple-tab-${index}`,
+        id: `wrapped-tab-${index}`,
         'aria-controls': `simple-tabpanel-${index}`,
     };
 }
@@ -52,23 +55,23 @@ const useStyles = makeStyles((theme) => ({
         flexGrow: 1,
         backgroundColor: theme.palette.background.paper,
     },
-    tab: {
-        position: 'relative',
-        marginTop: '-32%',
-        marginBottom: '1%',
-        alignItems: 'flex-start',
-        backgroundColor: '#4ca1a3',
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'flex-start',
-        height:'min-content',
-        width: 'fit-content',
-        flexGrow: 0,
-    }
+    // tab: {
+    //     position: 'relative',
+    //     marginTop: '-32%',
+    //     marginBottom: '1%',
+    //     alignItems: 'flex-start',
+    //     backgroundColor: '#4ca1a3',
+    //     display: 'flex',
+    //     flexDirection: 'row',
+    //     justifyContent: 'flex-start',
+    //     height:'min-content',
+    //     width: 'fit-content',
+    //     flexGrow: 0,
+    // }
 }));
 
 export default function AdminMedicTabs(props) {
-    const { Medics, Specialties } = props
+    // const { Medics, Specialties } = props
     const classes = useStyles();
     const [value, setValue] = React.useState(0);
 
@@ -85,10 +88,11 @@ export default function AdminMedicTabs(props) {
                 </Tabs>
             </AppBar>
             <TabPanel value={value} index={0}>
-                <Medics />
+             <AdminMedics />
             </TabPanel>
             <TabPanel value={value} index={1}>
-                {Specialties}
+              Specialties
+              <TextField id="filled-basic" label="Filled" variant="filled" />
             </TabPanel>
         </div>
     );

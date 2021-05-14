@@ -12,7 +12,7 @@ import NewPlanP from './NewPlanP/NewPlanP.jsx';
 import AdminNav from './AdminNav/AdminNav';
 import UserNav from './UserNav/UserNav.jsx';
 import AdminMedic from './AdminMedics/AdminMedics';
-import MedicTasbs from './FilterOrder/MedicTabs';
+import AdminTabs from './FilterOrder/AdminTabs';
 
 function App() {
     const firebase = useFirebaseApp();
@@ -28,7 +28,7 @@ function App() {
             />
             <Route path='/admin' component={AdminNav} />
             <Route exact path='/admin/listmedic' component={AdminMedic} />
-            <Route exact path='/admin/filter' component={MedicTasbs} />
+            <Route exact path='/admin/filter' component={AdminTabs} />
             <Route exact path='/asociate' component={ContactForm} />
             <Route exact path='/NewPlanP' component={NewPlanP} />
             <Route exact path='/' component={Footer} />
