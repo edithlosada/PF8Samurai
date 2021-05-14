@@ -1,4 +1,4 @@
-import { GET_PLANS_BENEFITS, GET_BENEFITS } from "./constants.actions";
+import { GET_PLANS_BENEFITS, GET_BENEFITS, GET_STATES, GET_LOCALITIES } from "./constants.actions";
 import supabase from "../supabase.config";
 
 function getPlans() {
@@ -27,4 +27,32 @@ function getBenefits() {
   };
 }
 
-export { getPlans, getBenefits };
+function getStates() {
+  return async (dispatch) => {
+    try {
+      const { data: states } = await supabase
+        .from("states")
+        .select("id,name");
+      dispatch({ type: GET_STATES, payload: states });
+    } catch (err) {
+      console.error(err);
+    }
+  };
+}
+
+function getLocalities(idState) {
+  return async (dispatch) => {
+    if(!idState){
+      try {
+        const { data: localities } = await supabase
+          .from("localities")
+          .select("*");
+        dispatch({ type: GET_LOCALITIES, payload: localities });
+      } catch (err) {
+        console.error(err);
+      }
+    }
+  };
+}
+
+export { getPlans, getBenefits, getStates, getLocalities };
