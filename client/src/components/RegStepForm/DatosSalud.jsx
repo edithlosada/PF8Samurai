@@ -4,11 +4,19 @@ import React, { useState } from "react"
 
 const DatosSalud = () =>{
 
-const [input,setInput] = useState({
-    completeName: "",
-    dni: ""
-})
-const handleChange= () =>{}
+  const [input, setInputs] = useState({
+    completeName: '',
+  })  
+  const handleChange = (e) => {
+    setInputs((prevState)=> {
+      console.log("entro",e.target.value,input)
+      return({
+        ...prevState,
+        [e.target.name]: e.target.value
+        }
+      )}
+    )
+  }
   return (
     <>
     <div id="cabecera">   
@@ -17,20 +25,23 @@ const handleChange= () =>{}
       name="completeName"
       label ="Nombre y Apeliido" 
       variant="outlined"
-      value={input.completeName}/>
+      value={input.completeName}
+      onChange={handleChange}/>
     <TextField 
       name= "dni"
       label ="DNI" 
       variant="outlined"
-      value={input.dni}/>
+      value={input.dni}
+      onChange={handleChange}/>
   </div> 
   <div>
     <FormLabel component="legend"> 1¿Posee antecedentes de cirugías? </FormLabel>
-      <RadioGroup aria-label="Surgery" name="surgeryRad" value={input.QuestionSurgery} onChange={handleChange}>
+      <RadioGroup aria-label="Surgery" name="surgeryRad" value={input.surgery} onChange={handleChange}>
         <FormControlLabel value="No" control={<Radio />} label="No" />
         <FormControlLabel value="Si" control={<Radio />} label="Si" />
       </RadioGroup>
-   <TextField 
+   {input.surgeryRad === "Si"?(<div>
+      <TextField 
       name="typeSurgery"
       label ="Tipo de Cirugia" 
       variant="outlined"
@@ -45,6 +56,8 @@ const handleChange= () =>{}
       }}
       value={input.complete_name}/>
       <TextField name="surgeryDiagnosis"label="Diagnostico"variant="outlined"value={input.surgeryDiagnosis}/>
+   </div>
+   ):null}
    </div>
       <FormLabel component="legend"> 2- ¿Tiene colocado un marcapasos o cardiodesfibrilador? </FormLabel>
       <RadioGroup aria-label="paceMaker" name="paceMakerRad" value={input.paceMaker} onChange={handleChange}>
