@@ -7,43 +7,51 @@ import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import styles from './MediaCard.module.css';
+import logoNav from '../../assets/images/logo.png';
 import PopUp from './PopUp';
 
 export default function MediaCard(props) {
+    const{plan}=props;
     const togglePopup = () => {
         setShowPup(!showPopup);
     };
+
+    
 
     const [showPopup, setShowPup] = useState(false);
     return (
         <Card className={styles.root}>
             <CardActionArea>
-                <CardMedia className={styles.media} image={props.neww.img} />
+                <CardMedia className={styles.media} image={logoNav} />
                 <CardContent className={styles.containerData}>
                     <Typography
                         className={styles.title}
                         gutterBottom
                         variant='h5'
                     >
-                        {props.neww.title}
+                        {plan.name}
                     </Typography>
                     <Typography
                         variant='body2'
                         color='textSecondary'
                         component='p'
                     >
-                        {props.neww.summary}
+                        ${plan.price}
                     </Typography>
+                    {plan.benefits.map((d, index) => (
+                        <Typography key={`cardInfo-${index}`} paragraph>
+                            {d.description}
+                        </Typography>))}
                 </CardContent>
+                <CardActions className={styles.popup}>
+                    <Button size='small' color='primary' onClick={togglePopup}>
+                        Mas información
+                    </Button>
+                </CardActions>
             </CardActionArea>
-            <CardActions className={styles.popup}>
-                <Button size='small' color='primary' onClick={togglePopup}>
-                    Mas información
-                </Button>
-            </CardActions>
             {showPopup && (
                 <PopUp
-                    news={props.neww}
+                    news={plan}
                     text='Cerrar'
                     closePopup={togglePopup}
                     show={showPopup}
