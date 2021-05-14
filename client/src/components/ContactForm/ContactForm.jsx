@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
+import { createMuiTheme } from '@material-ui/core/styles';
+import { ThemeProvider } from '@material-ui/styles';
 import { Redirect } from 'react-router-dom';
+import { makeStyles } from '@material-ui/core/styles';
 import Styles from './ContactForm.module.css';
+import emailjs from 'emailjs-com'
 import LogoNav from '../../assets/logo-integra.png';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
-import { createMuiTheme } from '@material-ui/core/styles';
-import { ThemeProvider } from '@material-ui/styles';
 import Snackbar from '@material-ui/core/Snackbar';
 import Alert from '@material-ui/lab/Alert';
 import Card from '@material-ui/core/Card';
-import { makeStyles } from '@material-ui/core/styles';
 import supabase from '../../supabase.config';
 
 const theme = createMuiTheme({
@@ -63,7 +64,7 @@ function ContactForm() {
     const [errorRequest, setErrorRequest] = useState(false);
     const [redirect, setRedirect] = useState(false);
 
-    const handleClickOpen = async () => {
+    const handleClickOpen = async (e) => {
         if (
             !errors.age &&
             !errors.dni &&
@@ -72,6 +73,7 @@ function ContactForm() {
             !errors.name
         ) {
             setSuccessRequest(true);
+            sendMail(e)
             const { data, error } = await supabase.from('request_form').insert([
                 {
                     name: input.name,
@@ -107,52 +109,74 @@ function ContactForm() {
             [e.target.name]: e.target.value,
         });
         setErrors(
-            validate({
-                ...input,
-                [e.target.name]: e.target.value,
-            })
+            validate(e.target.name, e.target.value)
         );
     };
 
-    function validate(input) {
+    function validate(inputName,value) {
         const mailPattern =
             /[a-zA-Z0-9]+[.]?([a-zA-Z0-9]+)?[@][a-z]{3,9}[.][a-z]{2,5}/g;
         const namePattern = /^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$/g;
         const numberPattern = /^[0-9\b]+$/;
         let errors = {};
-        if (!namePattern.test(input.name)) {
-            errors.name = true;
-        } else {
-            errors.name = false;
-        }
 
-        if (!numberPattern.test(input.age)) {
-            errors.age = true;
-        } else {
-            errors.age = false;
-        }
-
-        if (!numberPattern.test(input.dni) || input.dni.length !== 8) {
-            errors.dni = true;
-        } else {
-            errors.dni = false;
-        }
-
-        if (
-            !numberPattern.test(input.phone_number) ||
-            input.phone_number.length < 10
-        ) {
-            errors.phone_number = true;
-        } else {
-            errors.phone_number = false;
-        }
-
-        if (!mailPattern.test(input.mail)) {
-            errors.mail = true;
-        } else {
-            errors.mail = false;
+        switch(inputName){
+            case 'name':{
+                if (!namePattern.test(value)) {
+                    errors.name = true;
+                } else {
+                    errors.name = false;
+                }
+                break;
+            }
+            case 'age':{
+                if (!numberPattern.test(value)) {
+                    errors.age = true;
+                } else {
+                    errors.age = false;
+                }  
+                break;      
+            }
+            case 'dni':{
+                if (!numberPattern.test(value) || value.length !== 8) {
+                    errors.dni = true;
+                } else {
+                    errors.dni = false;
+                }  
+                break;     
+            }
+            case 'phone_number':{
+                if (
+                    !numberPattern.test(value) ||
+                    value.length < 10
+                ) {
+                    errors.phone_number = true;
+                } else {
+                    errors.phone_number = false;
+                } 
+                break;     
+            }
+            case 'mail':{
+                if (!mailPattern.test(value)) {
+                    errors.mail = true;
+                } else {
+                    errors.mail = false;
+                }
+                break;     
+            }
         }
         return errors;
+    }
+
+    function sendMail (e) {
+        e.preventDefault();
+
+    emailjs.send('service_wcpzjw7', 'template_r93a6bs', input, 'user_mgft1j53RDkaGc1EWyKNK')
+      .then((result) => {
+          console.log('resultado:',result.text);
+      }, (error) => {
+          console.log('error:',error.text);
+      });
     }
 
     const renderRedirect = () => {

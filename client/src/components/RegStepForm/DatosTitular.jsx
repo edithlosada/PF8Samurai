@@ -19,8 +19,8 @@ const DatosTitular = () =>{
 	const [input, setInput] = useState({
         first_name: '',
 		last_name:'',
-        birth: '',
-		sex:'',//falta
+        birth_date: '',
+		gender:'',//falta
         dni: '',
 		cuil:'',
         phone_number: '',
@@ -39,8 +39,8 @@ const DatosTitular = () =>{
     const [errors, setErrors] = useState({
         first_name: false,
 		last_name:false,
-        birth_date: false,
-		sex:false,
+        birth_date: false,//falta validar
+		gender:false,//falta validar
         dni: false,
 		cuil:false,
         phone_number: false,
@@ -55,6 +55,71 @@ const DatosTitular = () =>{
 			province:false
 		}
     });
+
+	const handleInputChange = (e) => {
+        setInput({
+            ...input,
+            [e.target.name]: e.target.value,
+        });
+        setErrors(
+            validate(e.target.name, e.target.value)
+        );
+    };
+
+    function validate(inputName,value) {
+        const mailPattern =
+            /[a-zA-Z0-9]+[.]?([a-zA-Z0-9]+)?[@][a-z]{3,9}[.][a-z]{2,5}/g;
+        const namePattern = /^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$/g;
+        const numberPattern = /^[0-9\b]+$/;
+        let errors = {};
+
+        switch(inputName){
+            case 'first_name':{
+                if (!namePattern.test(value)) {
+                    errors.first_name = true;
+                } else {
+                    errors.first_name = false;
+                }
+                break;
+            }
+            case 'last_name':{
+                if (!namePattern.test(value)) {
+                    errors.last_name = true;
+                } else {
+                    errors.last_name = false;
+                }
+                break;
+            }
+            case 'cuil':{
+                if (!numberPattern.test(value) || value.length !== 11) {
+                    errors.cuil = true;
+                } else {
+                    errors.cuil = false;
+                }  
+                break;     
+            }
+            case 'phone_number':{
+                if (
+                    !numberPattern.test(value) ||
+                    value.length < 10
+                ) {
+                    errors.phone_number = true;
+                } else {
+                    errors.phone_number = false;
+                } 
+                break;     
+            }
+            case 'mail':{
+                if (!mailPattern.test(value)) {
+                    errors.mail = true;
+                } else {
+                    errors.mail = false;
+                }
+                break;     
+            }
+        }
+        return errors;
+    }
 
 	return (
 		<div className={styles.form}>
@@ -220,6 +285,7 @@ const DatosTitular = () =>{
 						<TextField
 							id="birth"
 							label="Birthday"
+							name='birth_date'
 							type="date"
 							InputLabelProps={{
 								shrink: true,
