@@ -1,81 +1,95 @@
-import React, { useState } from 'react';
-import { Redirect } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { getStates, getLocalities} from '../../actions/getter.action';
 import Select from '@material-ui/core/Select';
 import TextField from '@material-ui/core/TextField';
+import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
-import Button from '@material-ui/core/Button';
-import { createMuiTheme } from '@material-ui/core/styles';
-import { ThemeProvider } from '@material-ui/styles';
-import Snackbar from '@material-ui/core/Snackbar';
-import Alert from '@material-ui/lab/Alert';
-import Card from '@material-ui/core/Card';
-import { makeStyles } from '@material-ui/core/styles';
 import styles from './DatosTitular.module.css'
-import supabase from '../../supabase.config';
 
 const DatosTitular = () =>{
-	const [successRequest, setSuccessRequest] = useState(false);
-	const [errorRequest, setErrorRequest] = useState(false);
+	const allStates = useSelector((state) => state.allStates);
+	const allLocalities = useSelector((state) => state.allLocalities);
+    const dispatch = useDispatch();
+
 	const [input, setInput] = useState({
         first_name: '',
 		last_name:'',
         birth_date: '',
-		gender:'',//falta
+		gender:'',
         dni: '',
 		cuil:'',
         phone_number: '',
-		nationality:'',
 		occupation:'',
 		marital_status:'',
         mail: '',
-		address:{
-			street_name:'',
-			number:'',
-			apartment:'',
-			city:'',
-			province:''
-		}
+
+		street_name:'',
+		number:'',
+		apartment:'',
+		locality:'',//falta
+		state:null
     });
     const [errors, setErrors] = useState({
         first_name: false,
 		last_name:false,
-        birth_date: false,//falta validar
-		gender:false,//falta validar
         dni: false,
 		cuil:false,
         phone_number: false,
-		nationality:false,
 		occupation:false,
-		marital_status:false,
         mail: false,
-		address:{
-			street_name:false,
-			number:false,
-			city:false,
-			province:false
-		}
+		street_name:false,
+		number:false,
+		apartment:false
     });
 
-	const handleInputChange = (e) => {
-        setInput({
-            ...input,
-            [e.target.name]: e.target.value,
-        });
-        setErrors(
-            validate(e.target.name, e.target.value)
-        );
-    };
+	useEffect(()=>{
+		dispatch(getStates());
+		dispatch(getLocalities());
+	},[])
+	
+	// useEffect(()=>{
+	// 	console.log('useEffect '+input.state)
+	// 	dispatch(getLocalities(input.state));
+	// },[input.state])
 
+	
+	const states = allStates.map((s)=>{
+		return(
+			<option value={s.id}>{s.name}</option>
+			)
+		})
+		
+	const localities = 
+	allLocalities
+	.filter(l=>l.state_id == input.state)
+	.map((l)=>{
+		return(
+			<option value={l.id}>{l.name}</option>
+			)
+		})
+
+	const handleInputChange = (e) => {
+		setInput({
+			...input,
+			[e.target.name]: e.target.value,
+		});
+		setErrors(
+			validate(e.target.name, e.target.value)
+		);
+	};
+			
     function validate(inputName,value) {
         const mailPattern =
             /[a-zA-Z0-9]+[.]?([a-zA-Z0-9]+)?[@][a-z]{3,9}[.][a-z]{2,5}/g;
         const namePattern = /^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$/g;
+		const streetPattern = /^[A-Za-z0-9\s]+$/g;
         const numberPattern = /^[0-9\b]+$/;
         let errors = {};
 
         switch(inputName){
             case 'first_name':{
-                if (!namePattern.test(value)) {
+                if (!namePattern.test(value) && value.length>0) {
                     errors.first_name = true;
                 } else {
                     errors.first_name = false;
@@ -83,15 +97,23 @@ const DatosTitular = () =>{
                 break;
             }
             case 'last_name':{
-                if (!namePattern.test(value)) {
+                if (!namePattern.test(value) && value.length>0) {
                     errors.last_name = true;
                 } else {
                     errors.last_name = false;
                 }
                 break;
             }
+            case 'dni':{
+                if (!numberPattern.test(value) || value.length === 8) {
+                    errors.dni = true;
+                } else {
+                    errors.dni = false;
+                }  
+                break;     
+            }
             case 'cuil':{
-                if (!numberPattern.test(value) || value.length !== 11) {
+                if (!numberPattern.test(value) || (value.length === 11)) {
                     errors.cuil = true;
                 } else {
                     errors.cuil = false;
@@ -100,8 +122,7 @@ const DatosTitular = () =>{
             }
             case 'phone_number':{
                 if (
-                    !numberPattern.test(value) ||
-                    value.length < 10
+                    !numberPattern.test(value) || (value.length < 10 && value.length>7)
                 ) {
                     errors.phone_number = true;
                 } else {
@@ -109,14 +130,46 @@ const DatosTitular = () =>{
                 } 
                 break;     
             }
+			case 'occupation':{
+                if (!namePattern.test(value) && value.length>0) {
+                    errors.occupation = true;
+                } else {
+                    errors.occupation = false;
+                }
+                break;
+            }
             case 'mail':{
-                if (!mailPattern.test(value)) {
+                if (!mailPattern.test(value) && value.length>0) {
                     errors.mail = true;
                 } else {
                     errors.mail = false;
                 }
                 break;     
             }
+			case 'street_name':{
+                if (!streetPattern.test(value) && value.length>0) {
+                    errors.street_name = true;
+                } else {
+                    errors.street_name = false;
+                }
+                break;
+            }
+			case 'number':{
+				if (!numberPattern.test(value) && (value.length>0 && value.length<8)) {
+					errors.number = true;
+                } else {
+					errors.number = false;
+                }
+                break;
+            }
+			case 'apartment':{
+				if (!streetPattern.test(value) && value.length>0) {
+					errors.apartment = true;
+				} else {
+					errors.apartment = false;
+				}
+				break;
+			}
         }
         return errors;
     }
@@ -135,12 +188,9 @@ const DatosTitular = () =>{
 							autoComplete='off'
 							value={input.first_name}
 							variant='outlined'
-							// InputLabelProps={{
-							// 	shrink: true,
-							//   }}
-							// onChange={(e) => handleInputChange(e)}
-							{...(errors.name && {
-								error: errors.name,
+							onChange={(e) => handleInputChange(e)}
+							{...(errors.first_name && {
+								error: errors.first_name,
 								helperText: 'Nombre invalido',
 							})}
 						/>
@@ -154,14 +204,49 @@ const DatosTitular = () =>{
 							autoComplete='off'
 							value={input.last_name}
 							variant='outlined'
-							// InputLabelProps={{
-							// 	shrink: true,
-							//   }}
-							// onChange={(e) => handleInputChange(e)}
-							{...(errors.name && {
-								error: errors.name,
+							onChange={(e) => handleInputChange(e)}
+							{...(errors.last_name && {
+								error: errors.last_name,
 								helperText: 'Nombre invalido',
 							})}
+						/>
+					</div>
+					<div className={styles.input}>
+						<FormControl variant="outlined" >
+							<InputLabel htmlFor="gender-select">Sexo</InputLabel>
+							<Select
+								native
+								value={input.gender}
+								onChange={(e) => handleInputChange(e)}
+								label="Sexo"
+								inputProps={{
+									name: "gender",
+									id: "gender-select",
+									style:{width:'177px'}
+								}}
+							>
+								<option aria-label="None" value="" />
+								<option value={"male"}>Masculino</option>
+								<option value={"female"}>Femenino</option>
+								<option value={"other"}>Otro</option>
+							</Select>
+						</FormControl>
+					</div>
+					<div className={styles.input}>
+						<TextField
+							id='dni-input'
+							label='DNI'
+							type='tel'
+							name='dni'
+							autoComplete='off'
+							value={input.dni}
+							variant='outlined'
+							onChange={(e) => handleInputChange(e)}
+							{...(errors.dni && {
+								error: true,
+								helperText: 'Dni invalido',
+							})}
+							inputProps={{ maxLength: 8 }}
 						/>
 					</div>
 					<div className={styles.input}>
@@ -173,28 +258,11 @@ const DatosTitular = () =>{
 							autoComplete='off'
 							value={input.cuil}
 							variant='outlined'
-							// onChange={(e) => handleInputChange(e)}
-							{...(errors.age && {
+							onChange={(e) => handleInputChange(e)}
+							{...(errors.cuil && {
 								error: true,
 								helperText: 'Edad invalido',
 							})}
-						/>
-					</div>
-					<div className={styles.input}>
-						<TextField
-							id='dni-input'
-							label='DNI'
-							type='tel'
-							name='dni'
-							autoComplete='off'
-							value={input.dni}
-							variant='outlined'
-							// onChange={(e) => handleInputChange(e)}
-							{...(errors.dni && {
-								error: true,
-								helperText: 'Dni invalido',
-							})}
-							inputProps={{ maxLength: 8 }}
 						/>
 					</div>
 					<div className={styles.input}>
@@ -206,7 +274,7 @@ const DatosTitular = () =>{
 							autoComplete='off'
 							value={input.phone_number}
 							variant='outlined'
-							// onChange={(e) => handleInputChange(e)}
+							onChange={(e) => handleInputChange(e)}
 							{...(errors.phone_number && {
 								error: true,
 								helperText: 'Teléfono invalido',
@@ -226,23 +294,7 @@ const DatosTitular = () =>{
 							autoComplete='off'
 							value={input.mail}
 							variant='outlined'
-							// onChange={(e) => handleInputChange(e)}
-							{...(errors.mail && {
-								error: true,
-								helperText: 'Mail invalido',
-							})}
-						/>
-					</div>
-					<div className={styles.input}>
-						<TextField
-							id='nacionality-input'
-							label='Nacionalidad'
-							type='text'
-							name='nacionality'
-							autoComplete='off'
-							value={input.nacionality}
-							variant='outlined'
-							// onChange={(e) => handleInputChange(e)}
+							onChange={(e) => handleInputChange(e)}
 							{...(errors.mail && {
 								error: true,
 								helperText: 'Mail invalido',
@@ -258,28 +310,33 @@ const DatosTitular = () =>{
 							autoComplete='off'
 							value={input.occupation}
 							variant='outlined'
-							// onChange={(e) => handleInputChange(e)}
-							{...(errors.mail && {
+							onChange={(e) => handleInputChange(e)}
+							{...(errors.occupation && {
 								error: true,
-								helperText: 'Mail invalido',
+								helperText: 'Ocupación invalida',
 							})}
 						/>
 					</div>
 					<div className={styles.input}>
-						<TextField
-							id='marital_status-input'
-							label='Estado civil'
-							type='text'
-							name='marital_status'
-							autoComplete='off'
-							value={input.marital_status}
-							variant='outlined'
-							// onChange={(e) => handleInputChange(e)}
-							{...(errors.mail && {
-								error: true,
-								helperText: 'Mail invalido',
-							})}
-						/>
+						<FormControl variant="outlined" >
+							<InputLabel htmlFor="marital_status-select">Estado civil</InputLabel>
+							<Select
+								native
+								value={input.marital_status}
+								onChange={(e) => handleInputChange(e)}
+								label="Estado civil"
+								
+								inputProps={{
+									name: 'marital_status',
+									id: 'marital_status-select',
+									style:{width:'177px'}
+								}}
+							>
+								<option aria-label="None" value="" />
+								<option value={"married"}>Casado/a</option>
+								<option value={"single"}>Soltero/a</option>
+							</Select>
+						</FormControl>
 					</div>
 					<div className={styles.input}>
 						<TextField
@@ -287,8 +344,11 @@ const DatosTitular = () =>{
 							label="Birthday"
 							name='birth_date'
 							type="date"
+							variant='outlined'
+							// style={{width:'177px'}}
 							InputLabelProps={{
 								shrink: true,
+								
 							}}
 						/>
 					</div>
@@ -305,10 +365,10 @@ const DatosTitular = () =>{
 						autoComplete='off'
 						value={input.street_name}
 						variant='outlined'
-						// onChange={(e) => handleInputChange(e)}
-						{...(errors.mail && {
+						onChange={(e) => handleInputChange(e)}
+						{...(errors.street_name && {
 							error: true,
-							helperText: 'Mail invalido',
+							helperText: 'Calle invalida',
 						})}
 					/>
 				</div>
@@ -321,10 +381,10 @@ const DatosTitular = () =>{
 						autoComplete='off'
 						value={input.apartment}
 						variant='outlined'
-						// onChange={(e) => handleInputChange(e)}
-						{...(errors.mail && {
+						onChange={(e) => handleInputChange(e)}
+						{...(errors.apartment && {
 							error: true,
-							helperText: 'Mail invalido',
+							helperText: 'Piso/Depto invalido',
 						})}
 					/>
 				</div>
@@ -337,44 +397,50 @@ const DatosTitular = () =>{
 						autoComplete='off'
 						value={input.number}
 						variant='outlined'
-						// onChange={(e) => handleInputChange(e)}
-						{...(errors.mail && {
+						onChange={(e) => handleInputChange(e)}
+						{...(errors.number && {
 							error: true,
-							helperText: 'Mail invalido',
+							helperText: 'Numero invalido',
 						})}
 					/>
 				</div>
 				<div className={styles.input}>
-					<TextField
-						id='city-input'
-						label='Localidad'
-						type='text'
-						name='city'
-						autoComplete='off'
-						value={input.city}
-						variant='outlined'
-						// onChange={(e) => handleInputChange(e)}
-						{...(errors.mail && {
-							error: true,
-							helperText: 'Mail invalido',
-						})}
-					/>
+					<FormControl variant="outlined" >
+						<InputLabel htmlFor="marital_status-select">Provincia</InputLabel>
+						<Select
+							native
+							value={input.state}
+							onChange={(e) => handleInputChange(e)}
+							label="Provincia"
+							name='state'
+							inputProps={{
+								id: 'state-select',
+								style:{width:'177px'}
+							}}
+						>
+							<option aria-label="None" value="" />
+							{states}
+						</Select>
+					</FormControl>
 				</div>
 				<div className={styles.input}>
-					<TextField
-						id='province-input'
-						label='Provincia'
-						type='text'
-						name='province'
-						autoComplete='off'
-						value={input.province}
-						variant='outlined'
-						// onChange={(e) => handleInputChange(e)}
-						{...(errors.mail && {
-							error: true,
-							helperText: 'Mail invalido',
-						})}
-					/>
+					<FormControl variant="outlined" >
+						<InputLabel htmlFor="locality-select">Localidad</InputLabel>
+						<Select
+							native
+							value={input.locality}
+							onChange={(e) => handleInputChange(e)}
+							label="Localidad"
+							name= 'locality'
+							inputProps={{
+								id: 'locality-select',
+								style:{width:'177px'}
+							}}
+						>
+							<option aria-label="None" value="" />
+							{localities}
+						</Select>
+					</FormControl>
 				</div>
 			</div>
 		</div>

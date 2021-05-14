@@ -1,4 +1,4 @@
-import { GET_PLANS_BENEFITS, GET_BENEFITS } from '../actions/constants.actions';
+import { GET_PLANS_BENEFITS, GET_BENEFITS, GET_STATES, GET_LOCALITIES } from '../actions/constants.actions';
 import {
     SET_NP_BEN_SEL,
     ADD_NP_BEN,
@@ -12,6 +12,8 @@ const initialState = {
     npbensel: [],
     addedbenefs: [],
     sended: false,
+    allStates:[],
+    allLocalities:[]
 };
 
 function rootReducer(state = initialState, action) {
@@ -25,6 +27,16 @@ function rootReducer(state = initialState, action) {
             return {
                 ...state,
                 allBenefits: action.payload,
+            };
+        case GET_STATES:
+            return {
+                ...state,
+                allStates: action.payload,
+            };
+        case GET_LOCALITIES:
+            return {
+                ...state,
+                allLocalities: action.payload,
             };
         case SET_NP_BEN_SEL:
             return {
