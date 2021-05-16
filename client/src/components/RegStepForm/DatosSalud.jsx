@@ -7,9 +7,9 @@ import {
   InputAdornment,
   Checkbox,
 } from "@material-ui/core";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import validator from "./Validator.js";
-
+import styles from "./DatosSalud.module.css"
 const DatosSalud = () => {
   const [input, setInputs] = useState({});
   const [radioInputs, SetRadioInputs] = useState({
@@ -42,7 +42,7 @@ const DatosSalud = () => {
     treatmentDate: "",
   });
   const [errors, setErrors] = useState({});
-
+  // const [errorsDate,setErrorsDate] = useState({})
   const handleChange = (e) => {
     setInputs((prevState) => {
       return {
@@ -58,17 +58,22 @@ const DatosSalud = () => {
         [e.target.name]: e.target.value,
       };
     });
-    setErrors(validator(radioInputs, "radio"));
+    setErrors({...errors,readioErrors:validator(radioInputs, "radio")});
   };
   const handleDate = (e) => {
-    console.log("eentro el input",e.target.value)
+    console.log("entro el input",e.target.value)
     setDateInputs((prevState) => {
       return {
         ...prevState,
         [e.target.name]: (e.target.value),
       };
     });
+    setErrors({...errors,dateErrors:validator(dateInputs,"fecha")})
   };
+  useEffect(()=>{
+      console.log("actualizado hola seba")
+      setErrors(errors)
+  },[errors])
 
   return (
     <>
@@ -84,13 +89,14 @@ const DatosSalud = () => {
         <TextField
           name="dni"
           label="DNI"
+          type="number"
           variant="outlined"
           value={input.dni}
           onChange={handleChange}
         />
       </div>
-      <div>
-        <FormLabel component="legend">
+      <div classsname={styles.pocho}>
+        <FormLabel  component="legend">
           {" "}
           1¿Posee antecedentes de cirugías?{" "}
         </FormLabel>
@@ -109,7 +115,7 @@ const DatosSalud = () => {
               name="typeSurgery"
               label="Tipo de Cirugia"
               variant="outlined"
-              value={input.questionSurgery}
+              value={input.typeSurgery}
               
             />
             <TextField
@@ -120,8 +126,8 @@ const DatosSalud = () => {
               InputLabelProps={{
                 shrink: true,
               }}
-              value={dateInputs.dateSurgery}
               onChange={handleDate}
+              value={dateInputs.dateSurgery}
             />
             <TextField
               name="surgeryDiagnosis"
@@ -131,7 +137,8 @@ const DatosSalud = () => {
             />
           </div>
         ):null
-        }
+       }
+        
       </div>
       <FormLabel component="legend">
         {" "}
