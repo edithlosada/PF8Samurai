@@ -67,22 +67,12 @@ import styles from './InfoCard.module.css';
 import logoNav from '../../assets/images/logo.png';
 import { NavLink } from 'react-router-dom';
 
-// const useStyles = makeStyles({
-//     root: {
-//         maxWidth: 345,
-//     },
-    // media: {
-    //     height: 140,
-    // },
-// });
 const useStyles = makeStyles((theme) => ({
     root: {
       width: '100%',
       maxWidth: 360,
-    //   backgroundColor: theme.palette.background.paper,
       position: 'relative',
       overflow: 'auto',
-    //   maxHeight: 300,
     },
     listSection: {
       backgroundColor: 'inherit',

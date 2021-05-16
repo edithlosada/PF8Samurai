@@ -3,6 +3,7 @@ import InfoCard from './InfoCard';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import * as Styles from './InfoPlans.module.css';
+import { makeStyles } from '@material-ui/core/styles';
 import { useSelector, useDispatch } from 'react-redux';
 import { getPlans } from '../../actions/getter.action';
 import { teal } from '@material-ui/core/colors';
