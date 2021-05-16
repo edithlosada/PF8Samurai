@@ -170,7 +170,7 @@ const DatosTitular = () =>{
 				}
 				break;
 			}
-        }
+      default:  }
         return errors;
     }
 
