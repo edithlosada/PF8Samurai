@@ -51,46 +51,54 @@ function ContactForm() {
         age: '',
         dni: '',
         phone_number: '',
-        mail: '',
+        email: '',
     });
+
     const [errors, setErrors] = useState({
         name: false,
         age: false,
         dni: false,
         phone_number: false,
-        mail: false,
+        email: false,
+        onProcess: false
     });
     const [successRequest, setSuccessRequest] = useState(false);
     const [errorRequest, setErrorRequest] = useState(false);
     const [redirect, setRedirect] = useState(false);
 
     const handleClickOpen = async (e) => {
+
         if (
             !errors.age &&
             !errors.dni &&
             !errors.phone_number &&
-            !errors.mail &&
-            !errors.name
+            !errors.email &&
+            !errors.name &&
+            !errors.onProcess
         ) {
+            console.log('No hay errores!', errors)
             setSuccessRequest(true);
-            sendMail(e)
-            const { data, error } = await supabase.from('request_form').insert([
+            const { data: contactFormResolve, error: insertError } = await supabase.from('guest_contacts').insert([
                 {
+                    dni: parseInt(input.dni),
                     name: input.name,
-                    age: input.age,
-                    dni: input.dni,
-                    phone_number: input.phone_number,
-                    mail: input.mail,
-                },
+                    age: parseInt(input.age),
+                    phone_number: parseInt(input.phone_number),
+                    email: input.email
+                }
             ]);
+
+            contactFormResolve && sendEmail()
+
             setInput({
                 name: '',
                 age: '',
                 dni: '',
                 phone_number: '',
-                mail: '',
+                email: '',
             });
         } else {
+            console.log('Hay errores!', errors)
             setErrorRequest(true);
         }
     };
@@ -101,6 +109,7 @@ function ContactForm() {
     };
     const handleBack = () => {
         setRedirect(true);
+        setSuccessRequest(false)
     };
 
     const handleInputChange = (e) => {
@@ -113,81 +122,90 @@ function ContactForm() {
         );
     };
 
-    function validate(inputName,value) {
-        const mailPattern =
+    function validate(inputName, value) {
+        const emailPattern =
             /[a-zA-Z0-9]+[.]?([a-zA-Z0-9]+)?[@][a-z]{3,9}[.][a-z]{2,5}/g;
         const namePattern = /^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$/g;
         const numberPattern = /^[0-9\b]+$/;
-        let errors = {};
+        var validateErrors = errors
 
-        switch(inputName){
-            case 'name':{
+        switch (inputName) {
+            case 'name': {
                 if (!namePattern.test(value)) {
-                    errors.name = true;
+                    validateErrors = { ...errors, [inputName]: true };
                 } else {
-                    errors.name = false;
+                    validateErrors = { ...errors, [inputName]: false };
                 }
                 break;
             }
-            case 'age':{
+            case 'age': {
                 if (!numberPattern.test(value)) {
-                    errors.age = true;
+                    validateErrors = { ...errors, [inputName]: true };
                 } else {
-                    errors.age = false;
-                }  
-                break;      
+                    validateErrors = { ...errors, [inputName]: false };
+                }
+                break;
             }
-            case 'dni':{
+            case 'dni': {
                 if (!numberPattern.test(value) || value.length !== 8) {
-                    errors.dni = true;
+                    validateErrors = { ...errors, [inputName]: true };
                 } else {
-                    errors.dni = false;
-                }  
-                break;     
+                    validateErrors = { ...errors, [inputName]: false };
+                }
+                break;
             }
-            case 'phone_number':{
+            case 'phone_number': {
                 if (
                     !numberPattern.test(value) ||
                     value.length < 10
                 ) {
-                    errors.phone_number = true;
+                    validateErrors = { ...errors, [inputName]: true };
                 } else {
-                    errors.phone_number = false;
-                } 
-                break;     
-            }
-            case 'mail':{
-                if (!mailPattern.test(value)) {
-                    errors.mail = true;
-                } else {
-                    errors.mail = false;
+                    validateErrors = { ...errors, [inputName]: false };
                 }
-                break;     
+                break;
+            }
+            case 'email': {
+                inputEmailFetchCheck(value)
+                if ( !emailPattern.test(value) ) {
+                    validateErrors = { ...errors, [inputName]: true };
+                } else {
+                    validateErrors = { ...errors, [inputName]: false};
+                }
+                break;
             }
         }
-        return errors;
+        console.log(validateErrors)
+        return validateErrors;
     }
 
-    function sendMail (e) {
-        e.preventDefault();
+    async function inputEmailFetchCheck(email) {
 
-    emailjs.send('service_wcpzjw7', 'template_r93a6bs', input, 'user_mgft1j53RDkaGc1EWyKNK')
-      .then((result) => {
-          console.log('resultado:',result.text);
-      }, (error) => {
-          console.log('error:',error.text);
-      });
+        const { data: emails, error: emailError } = await supabase.from('guest_contacts').select('email').eq('email', email)
+        emails && console.log('emails!', emails)
+        console.log(emails.length > 0)
+        setErrors({...errors, onProcess: emails.length > 0})
     }
 
-    const renderRedirect = () => {
-        if (redirect) {
-            return <Redirect to='/' />;
-        }
-    };
+    function sendEmail() {
 
-    return (
-        <div className={Styles.conteinerAll}>
-            <ThemeProvider theme={theme}>
+        emailjs.send('service_wcpzjw7', 'template_r93a6bs', input, 'user_mgft1j53RDkaGc1EWyKNK')
+            .then((result) => {
+                console.log('resultado:', result.text);
+            }, (error) => {
+                console.log('error:', error.text);
+            });
+    }
+
+    // const renderRedirect = () => {
+    //     if (redirect) {
+    //         setSuccessRequest(false)
+    //     }
+    // };
+
+    const success = () => {
+        if (successRequest) {
+            return (
                 <div
                     className={Styles.successRequest}
                     style={!successRequest ? { display: 'none' } : {}}
@@ -216,9 +234,19 @@ function ContactForm() {
                         >
                             Volver
                         </Button>
-                        {renderRedirect()}
+                        {/* {renderRedirect()} */}
                     </div>
                 </div>
+            )
+        } else {
+            return null
+        }
+    }
+
+    return (
+        <div className={Styles.conteinerAll}>
+            <ThemeProvider theme={theme}>
+                {success()}
                 <Card className={classes.root}>
                     <Snackbar
                         open={errorRequest}
@@ -226,7 +254,7 @@ function ContactForm() {
                         onClose={handleClose}
                     >
                         <Alert onClose={handleClose} severity='error'>
-                            Error, verifique los datos.
+                            Error! Verifique sus datos
                         </Alert>
                     </Snackbar>
                     <div className={Styles.formConteiner}>
@@ -299,17 +327,17 @@ function ContactForm() {
                                 />
                             </div>
                             <div className={Styles.textField}>
-                                <label htmlFor=''>Mi mail es </label>
+                                <label htmlFor=''>Mi email es </label>
                                 <TextField
-                                    id='mail-input'
+                                    id='email-input'
                                     type='text'
-                                    name='mail'
+                                    name='email'
                                     autoComplete='off'
-                                    value={input.mail}
+                                    value={input.email}
                                     onChange={(e) => handleInputChange(e)}
-                                    {...(errors.mail && {
+                                    {...(errors.email && {
                                         error: true,
-                                        helperText: 'Mail invalido',
+                                        helperText: 'eMail invalido',
                                     })}
                                 />
                             </div>
@@ -324,7 +352,7 @@ function ContactForm() {
                                     !input.age ||
                                     !input.dni ||
                                     !input.phone_number ||
-                                    !input.mail ||
+                                    !input.email ||
                                     !input.name
                                 }
                             >
@@ -338,8 +366,18 @@ function ContactForm() {
                             >
                                 Volver
                             </Button>
-                            {renderRedirect()}
+                            {/* {renderRedirect()} */}
                         </div>
+                        <Snackbar
+                            open={errorRequest && errors.onProcess}
+                            autoHideDuration={4000}
+                            onClose={handleClose}
+                        >
+                            <Alert onClose={handleClose} severity='info'>
+                                {' '}
+                            Éste correo ya tiene una solicitud en proceso!
+                        </Alert>
+                        </Snackbar>
                     </div>
                 </Card>
             </ThemeProvider>
