@@ -8,7 +8,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { getPlans } from '../../actions/getter.action';
 import { teal } from '@material-ui/core/colors';
 
-function InfoPlanes() {
+function InfoPlanes() { 
     const plans = useSelector((state) => state.allPlans);
     const dispatch = useDispatch();
 
