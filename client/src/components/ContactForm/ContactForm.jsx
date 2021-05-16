@@ -64,10 +64,8 @@ function ContactForm() {
     const [successRequest, setSuccessRequest] = useState(false);
     const [errorRequest, setErrorRequest] = useState(false);
     const [redirect, setRedirect] = useState(false);
-   
-    const handleClickOpen = async (e) => {
 
-        await inputEmailFetchCheck(input.email)
+    const handleClickOpen = async (e) => {
 
         if (
             !errors.age &&
@@ -77,9 +75,9 @@ function ContactForm() {
             !errors.name &&
             !errors.onProcess
         ) {
-            console.log('errors:', errors)
+            console.log('No hay errores!', errors)
             setSuccessRequest(true);
-            const { data: contactFormResolve, error: insertEmailError } = await supabase.from('guest_contacts').insert([
+            const { data: contactFormResolve, error: insertError } = await supabase.from('guest_contacts').insert([
                 {
                     dni: parseInt(input.dni),
                     name: input.name,
@@ -89,7 +87,7 @@ function ContactForm() {
                 }
             ]);
 
-            contactFormResolve && sendeMail()
+            contactFormResolve && sendEmail()
 
             setInput({
                 name: '',
@@ -99,6 +97,7 @@ function ContactForm() {
                 email: '',
             });
         } else {
+            console.log('Hay errores!', errors)
             setErrorRequest(true);
         }
     };
@@ -127,7 +126,7 @@ function ContactForm() {
             /[a-zA-Z0-9]+[.]?([a-zA-Z0-9]+)?[@][a-z]{3,9}[.][a-z]{2,5}/g;
         const namePattern = /^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$/g;
         const numberPattern = /^[0-9\b]+$/;
-        let errors = {
+        var validateErrors = {
             name: false,
             age: false,
             dni: false,
@@ -139,25 +138,25 @@ function ContactForm() {
         switch (inputName) {
             case 'name': {
                 if (!namePattern.test(value)) {
-                    errors = { ...errors, [inputName]: true };
+                    validateErrors = { ...validateErrors, [inputName]: true };
                 } else {
-                    errors = { ...errors, [inputName]: false };
+                    validateErrors = { ...validateErrors, [inputName]: false };
                 }
                 break;
             }
             case 'age': {
                 if (!numberPattern.test(value)) {
-                    errors = { ...errors, [inputName]: true };
+                    validateErrors = { ...validateErrors, [inputName]: true };
                 } else {
-                    errors = { ...errors, [inputName]: false };
+                    validateErrors = { ...validateErrors, [inputName]: false };
                 }
                 break;
             }
             case 'dni': {
                 if (!numberPattern.test(value) || value.length !== 8) {
-                    errors = { ...errors, [inputName]: true };
+                    validateErrors = { ...validateErrors, [inputName]: true };
                 } else {
-                    errors = { ...errors, [inputName]: false };
+                    validateErrors = { ...validateErrors, [inputName]: false };
                 }
                 break;
             }
@@ -166,40 +165,37 @@ function ContactForm() {
                     !numberPattern.test(value) ||
                     value.length < 10
                 ) {
-                    errors = { ...errors, [inputName]: true };
+                    validateErrors = { ...validateErrors, [inputName]: true };
                 } else {
-                    errors = { ...errors, [inputName]: false };
+                    validateErrors = { ...validateErrors, [inputName]: false };
                 }
                 break;
             }
             case 'email': {
-                if (!emailPattern.test(value)) {
-                    errors = { ...errors, [inputName]: true };
+                let checkInBase = inputEmailFetchCheck(value)
+                if (
+                    !emailPattern.test(value)
+                ) {
+                    validateErrors = { ...validateErrors, [inputName]: true };
                 } else {
-                    errors = { ...errors, [inputName]: false };
+                    validateErrors = { ...validateErrors, [inputName]: false, onProcess: checkInBase };
                 }
                 break;
             }
         }
-        return errors;
+        console.log(validateErrors)
+        return validateErrors;
     }
 
-    async function inputEmailFetchCheck(email){
+    async function inputEmailFetchCheck(email) {
 
         const { data: emails, error: emailError } = await supabase.from('guest_contacts').select('email').eq('email', email)
         emails && console.log('emails!', emails)
-
-        if (emails.length) {
-            setErrors({ ...errors, onProcess: true, successRequest: false })
-        } else {
-            setErrors({ ...errors, onProcess: false, successRequest: true })
-        }
-        console.log('state erros',errors)
-        console.log('fetch erros',emailError)
-
+        console.log(emails.length > 0)
+        return emails.length > 0
     }
 
-    function sendeMail() {
+    function sendEmail() {
 
         emailjs.send('service_wcpzjw7', 'template_r93a6bs', input, 'user_mgft1j53RDkaGc1EWyKNK')
             .then((result) => {
@@ -215,7 +211,7 @@ function ContactForm() {
     //     }
     // };
 
-    const success = ()=>{
+    const success = () => {
         if (successRequest) {
             return (
                 <div
@@ -381,13 +377,13 @@ function ContactForm() {
                             {/* {renderRedirect()} */}
                         </div>
                         <Snackbar
-                            open={errors.onProcess && successRequest}
-                            autoHideDuration={6000}
+                            open={errorRequest && errors.onProcess}
+                            autoHideDuration={4000}
                             onClose={handleClose}
                         >
                             <Alert onClose={handleClose} severity='info'>
                                 {' '}
-                            Éste correo ya tiene una solicitud en proseso!
+                            Éste correo ya tiene una solicitud en proceso!
                         </Alert>
                         </Snackbar>
                     </div>

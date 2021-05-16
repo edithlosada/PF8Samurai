@@ -36,15 +36,6 @@ function InfoPlanes() {
             : setCurrCard(plans.length - 1);
     };
 
-    const handleKeyDown = (e) => {
-        if (e.keyCode === 39) {
-            forward();
-        }
-        if (e.keyCode === 37) {
-            back();
-        }
-    };
-
     const autoSlide=()=>{
         currCard < plans.length - 1
             ? setCurrCard(currCard + 1)
@@ -60,11 +51,6 @@ function InfoPlanes() {
     useEffect(() => {
         dispatch(getPlans());
 
-        window.addEventListener('keydown', handleKeyDown);
-
-        return () => {
-            window.removeEventListener('keydown', handleKeyDown);
-        };
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     if (plans.length === 0) return <h2>Loading...</h2>;
