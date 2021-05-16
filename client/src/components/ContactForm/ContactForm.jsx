@@ -53,6 +53,7 @@ function ContactForm() {
         phone_number: '',
         email: '',
     });
+
     const [errors, setErrors] = useState({
         name: false,
         age: false,
@@ -126,37 +127,30 @@ function ContactForm() {
             /[a-zA-Z0-9]+[.]?([a-zA-Z0-9]+)?[@][a-z]{3,9}[.][a-z]{2,5}/g;
         const namePattern = /^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$/g;
         const numberPattern = /^[0-9\b]+$/;
-        var validateErrors = {
-            name: false,
-            age: false,
-            dni: false,
-            phone_number: false,
-            email: false,
-            onProcess: false
-        };
+        var validateErrors = errors
 
         switch (inputName) {
             case 'name': {
                 if (!namePattern.test(value)) {
-                    validateErrors = { ...validateErrors, [inputName]: true };
+                    validateErrors = { ...errors, [inputName]: true };
                 } else {
-                    validateErrors = { ...validateErrors, [inputName]: false };
+                    validateErrors = { ...errors, [inputName]: false };
                 }
                 break;
             }
             case 'age': {
                 if (!numberPattern.test(value)) {
-                    validateErrors = { ...validateErrors, [inputName]: true };
+                    validateErrors = { ...errors, [inputName]: true };
                 } else {
-                    validateErrors = { ...validateErrors, [inputName]: false };
+                    validateErrors = { ...errors, [inputName]: false };
                 }
                 break;
             }
             case 'dni': {
                 if (!numberPattern.test(value) || value.length !== 8) {
-                    validateErrors = { ...validateErrors, [inputName]: true };
+                    validateErrors = { ...errors, [inputName]: true };
                 } else {
-                    validateErrors = { ...validateErrors, [inputName]: false };
+                    validateErrors = { ...errors, [inputName]: false };
                 }
                 break;
             }
@@ -165,20 +159,18 @@ function ContactForm() {
                     !numberPattern.test(value) ||
                     value.length < 10
                 ) {
-                    validateErrors = { ...validateErrors, [inputName]: true };
+                    validateErrors = { ...errors, [inputName]: true };
                 } else {
-                    validateErrors = { ...validateErrors, [inputName]: false };
+                    validateErrors = { ...errors, [inputName]: false };
                 }
                 break;
             }
             case 'email': {
-                let checkInBase = inputEmailFetchCheck(value)
-                if (
-                    !emailPattern.test(value)
-                ) {
-                    validateErrors = { ...validateErrors, [inputName]: true };
+                inputEmailFetchCheck(value)
+                if ( !emailPattern.test(value) ) {
+                    validateErrors = { ...errors, [inputName]: true };
                 } else {
-                    validateErrors = { ...validateErrors, [inputName]: false, onProcess: checkInBase };
+                    validateErrors = { ...errors, [inputName]: false};
                 }
                 break;
             }
@@ -192,7 +184,7 @@ function ContactForm() {
         const { data: emails, error: emailError } = await supabase.from('guest_contacts').select('email').eq('email', email)
         emails && console.log('emails!', emails)
         console.log(emails.length > 0)
-        return emails.length > 0
+        setErrors({...errors, onProcess: emails.length > 0})
     }
 
     function sendEmail() {
