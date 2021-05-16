@@ -236,14 +236,11 @@ export default function EnhancedTable({rows}) {
     const handleDelete = async (id,name)=>{
       let res = window.confirm(`esta seguro que desea eliminar ${name.toUpperCase()}?`);
       if(res){
-        ///const deleteMedicsSpeciality = (id)=>{
           //primero se elimina de tabla intermedia
           const { data:relation, errorRelation } =  await supabase
-          .from('medics_medical_specialities')
-          .delete()
-          .match({ speciality_id: id });
-        //}
-        ///const deleteSpeciality = async(id)=>{
+            .from('medics_medical_specialities')
+            .delete()
+            .match({ speciality_id: id });
           const { data:speciality, errorSpeciality } =  await supabase
             .from('medical_specialities')
             .delete()
@@ -252,8 +249,6 @@ export default function EnhancedTable({rows}) {
           if(!errorRelation && !errorSpeciality)
             alert(`La espcialidad ${name.toUpperCase()} se ha eliminado con exito.`)
         }
-        // deleteMedicsSpeciality(id);
-        // deleteSpeciality (id);
     }
 
     const handleClose = ()=>{

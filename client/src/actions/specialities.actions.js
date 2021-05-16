@@ -42,23 +42,5 @@ export function addSpeciality(name) {
     };
 }
 
-export function deleteSpeciality(id) {
-    return async (dispatch) => {
-    try {
-        const { data:specialities, error } = await supabase
-        .from('medical_specialities')
-        .select(`
-            *,
-            medics_medical_specialities (
-            id,dni)
-        `)
-        .match({ id: id } )
-        dispatch({ type: DELETE_SPECIALITY, payload: specialities });
-        console.log('pase por delete',specialities)
-    } catch (err) {
-        console.error(err);
-    }
-    };
-}
 
 

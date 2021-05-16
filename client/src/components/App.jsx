@@ -11,7 +11,7 @@ import ContactForm from './ContactForm/ContactForm.jsx';
 import NewPlanP from './NewPlanP/NewPlanP.jsx';
 import AdminNav from './AdminNav/AdminNav';
 import UserNav from './UserNav/UserNav.jsx';
-import FormSpecialities from './Speciality/FormSpecialities.jsx'
+import Bussiness from './RegStepForm2/Bussiness'
 
 function App() {
     const firebase = useFirebaseApp();
@@ -19,7 +19,7 @@ function App() {
         <>
             <Route exact path='/' component={NavBar} />
             <Route exact path='/' component={LandingPage} />
-            <Route exact path='/specialities' component={FormSpecialities} />
+            <Route exact path='/bussiness' component={Bussiness} />
             <Route path='/faqs' component={FaqsPage} />
             <Route path='/login' render={() => <Login firebase={firebase} />} />
             <Route
