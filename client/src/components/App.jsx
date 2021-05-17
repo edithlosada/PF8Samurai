@@ -12,7 +12,7 @@ import NewPlanP from './NewPlanP/NewPlanP.jsx';
 import AdminNav from './AdminNav/AdminNav';
 import UserNav from './UserNav/UserNav.jsx';
 import AdminMedic from './AdminMedics/AdminMedics';
-import AdminTabs from './FilterOrder/AdminTabs';
+import AdminTabs from './MedicsTable/AdminTabs';
 
 function App() {
     const firebase = useFirebaseApp();

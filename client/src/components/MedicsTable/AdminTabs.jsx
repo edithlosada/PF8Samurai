@@ -50,28 +50,28 @@ const useStyles = makeStyles((theme) => ({
         display: 'flex',
         flexDirection: 'column',
         height: '100%',
-        justifyContent: 'flex-start',
+        justifyContent: 'space-around',
         width: '100%',
         flexGrow: 1,
         backgroundColor: theme.palette.background.paper,
     },
-    // tab: {
-    //     position: 'relative',
-    //     marginTop: '-32%',
-    //     marginBottom: '1%',
-    //     alignItems: 'flex-start',
-    //     backgroundColor: '#4ca1a3',
-    //     display: 'flex',
-    //     flexDirection: 'row',
-    //     justifyContent: 'flex-start',
-    //     height:'min-content',
-    //     width: 'fit-content',
-    //     flexGrow: 0,
-    // }
+    tab: {
+        position: 'relative',
+        marginTop: '-32%',
+        marginBottom: '1%',
+        alignItems: 'flex-start',
+        backgroundColor: '#4ca1a3',
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'flex-start',
+        height:'min-content',
+        width: 'min-content',
+        flexGrow: 0,
+    }
 }));
 
 export default function AdminMedicTabs(props) {
-    // const { Medics, Specialties } = props
+    
     const classes = useStyles();
     const [value, setValue] = React.useState(0);
 

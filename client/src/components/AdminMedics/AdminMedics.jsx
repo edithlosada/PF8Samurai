@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import supabase from '../../supabase.config.js';
 import 'firebase/auth';
-import MedicsTable from "../FilterOrder/MedicsTable"
+import MedicsTable from "../MedicsTable/MedicsTable"
 
 //styles
 import styles from './AdminMedic.module.css';

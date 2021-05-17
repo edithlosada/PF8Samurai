@@ -20,7 +20,10 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
 import DeleteIcon from '@material-ui/icons/Delete';
 import FilterListIcon from '@material-ui/icons/FilterList';
-import { Avatar } from '@material-ui/core'
+import ClearAllIcon from '@material-ui/icons/ClearAll';
+import {
+  Avatar, Dialog, DialogTitle, DialogContent, FormControl, InputLabel, Select, Input, MenuItem, DialogActions, TextField
+} from '@material-ui/core'
 import { Button } from '@material-ui/core';
 
 function descendingComparator(a, b, orderBy) {
@@ -62,11 +65,14 @@ const headCells = [
   { id: 'state', numeric: false, disablePadding: false, label: 'Activo' },
 ];
 
+
 function EnhancedTableHead(props) {
-  const { classes, onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } = props;
+  const { classes, order, orderBy, numSelected, rowCount, onRequestSort } = props;
   const createSortHandler = (property) => (event) => {
     onRequestSort(event, property);
   };
+
+
 
   return (
     <TableHead>
@@ -127,9 +133,73 @@ const useToolbarStyles = makeStyles((theme) => ({
   },
 }));
 
+
 const EnhancedTableToolbar = (props) => {
   const classes = useToolbarStyles();
-  const { numSelected } = props;
+  const { numSelected, setToShowRows, toShowRows, rows } = props;
+  const [open, setOpen] = React.useState(false);
+  const [selectedOption, setSelectedOption] = React.useState('');
+  const [selectedState, setSelectedState] = React.useState('activo');
+
+
+  const handleChange = (event) => {
+    event.target.name === 'state' ?
+      setSelectedState(event.target.value) &&
+      setSelectedOption(event.target.value)
+      :
+      setSelectedOption(event.target.value);
+    };
+    
+    const handleClickOpen = () => {
+      setOpen(true);
+    };
+    
+    const handleClose = () => {
+      setOpen(false);
+      setToShowRows(rows)
+    };
+
+    const handleSubmit = (e) =>{
+      e.preventDefault();
+      selectedOption ==='state' ? 
+      filter(e.target[0].value, e.target[1].value)
+      :
+      filter(e.target[0].value, e.target[2].value) 
+    }
+
+  const filter = (value, option) => {
+    setToShowRows(rows)
+    if (option === 'lastname') {
+      value ? setToShowRows(toShowRows.filter((r) => {
+        return r[option].toLowerCase().includes(value.toLowerCase())
+      }))
+        :
+        setToShowRows(rows)
+    } else
+      if (option === 'dni') {
+        value ? setToShowRows(toShowRows.filter((r) => {
+          return String(r[option]).toLowerCase().includes(value.toLowerCase())
+        }))
+          :
+          setToShowRows(rows)
+      } else
+        if (option === 'medical_specialities') {
+          value ? setToShowRows(toShowRows.filter((r) => (
+            r[option].some(e => e.name.toLowerCase().includes(value.toLowerCase()))
+          )))
+            :
+            setToShowRows(rows)
+        } else
+          if (option === 'state') {
+            value ? setToShowRows(toShowRows.filter(r=>{
+              return r[option].toLowerCase() === value.toLowerCase()
+            }))
+              :
+              setToShowRows(rows)
+          } else setToShowRows(rows)
+    setOpen(false);
+  }
+
 
   return (
     <Toolbar
@@ -137,16 +207,68 @@ const EnhancedTableToolbar = (props) => {
         [classes.highlight]: numSelected > 0,
       })}
     >
-        <Typography className={classes.title} variant="h6" id="tableTitle" component="div">
-          Doctors
+      <Typography className={classes.title} variant="h6" id="tableTitle" component="div">
+        Doctors
         </Typography>
-        <Tooltip title="Filter list" >
-          <IconButton aria-label="filter list" >
-            <FilterListIcon>
-              <Button onCLick={() => console.log('clickc al filtro')} />
-            </FilterListIcon>
-          </IconButton>
-        </Tooltip>
+        <Tooltip title="Clear" onClick={handleClose}>
+        <IconButton aria-label="reset">
+          <ClearAllIcon />
+        </IconButton>
+      </Tooltip>
+      <Tooltip title="Filter list" onClick={handleClickOpen}>
+        <IconButton aria-label="filter list">
+          <FilterListIcon />
+        </IconButton>
+      </Tooltip>
+      <Dialog disableBackdropClick disableEscapeKeyDown open={open} onClose={handleClose}>
+        <DialogTitle>Fill the form</DialogTitle>
+        <form className={classes.container} onSubmit={handleSubmit}>
+          <DialogContent>
+            <FormControl className={classes.formControl}>
+              {selectedOption === 'state' ?
+                <FormControl className={classes.formControl} >
+                  <Select
+                    native
+                    value={selectedState}
+                    onChange={handleChange}
+                    input={<Input id="demo-dialog-native" />}
+                    name='state'
+                    label="value"
+                  >
+                    <option aria-label="None" value="" />
+                    <option value='activo'>Activo</option>
+                    <option value='inhabilitado'>Inhabilitado</option>
+                  </Select>
+                </FormControl>
+                :
+                <TextField id="outlined-basic" label="value" variant="outlined" />}
+            </FormControl>
+            <FormControl className={classes.formControl}>
+              <InputLabel htmlFor="demo-dialog-native">Filter By</InputLabel>
+              <Select
+                native
+                value={selectedOption}
+                onChange={handleChange}
+                input={<Input id="demo-dialog-native" />}
+              >
+                <option aria-label="None" value="" />
+                <option value='dni'>DNI</option>
+                <option value='lastname'>Last Name</option>
+                <option value='medical_specialities'>Specialty</option>
+                <option value='state'>Sate</option>
+              </Select>
+            </FormControl>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleClose} color="primary">
+              Cancel
+          </Button>
+            <Button color="primary" type='submit'>
+              Ok
+          </Button>
+          </DialogActions>
+        </form>
+      </Dialog>
     </Toolbar>
   );
 };
@@ -181,12 +303,12 @@ const useStyles = makeStyles((theme) => ({
 
 export default function MedicsTable(props) {
   const { rows } = props
+  const [toShowRows, setToShowRows] = React.useState(rows)
   const classes = useStyles();
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('calories');
   const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(0);
-  const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
   const handleRequestSort = (event, property) => {
@@ -197,31 +319,11 @@ export default function MedicsTable(props) {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = rows.map((n) => n.name);
+      const newSelecteds = toShowRows.map((n) => n.name);
       setSelected(newSelecteds);
       return;
     }
     setSelected([]);
-  };
-
-  const handleClick = (event, name) => {
-    const selectedIndex = selected.indexOf(name);
-    let newSelected = [];
-
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, name);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1),
-      );
-    }
-
-    setSelected(newSelected);
   };
 
   const handleChangePage = (event, newPage) => {
@@ -233,23 +335,23 @@ export default function MedicsTable(props) {
     setPage(0);
   };
 
-  const handleChangeDense = (event) => {
-    setDense(event.target.checked);
-  };
+  // const handleChangeDense = (event) => {
+  //   setDense(event.target.checked);
+  // };
 
   const isSelected = (name) => selected.indexOf(name) !== -1;
 
-  const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
+  const emptyRows = rowsPerPage - Math.min(rowsPerPage, toShowRows.length - page * rowsPerPage);
 
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
-        <EnhancedTableToolbar numSelected={selected.length} />
+        <EnhancedTableToolbar numSelected={selected.length} setToShowRows={setToShowRows} toShowRows={toShowRows} rows={rows} />
         <TableContainer>
           <Table
             className={classes.table}
             aria-labelledby="tableTitle"
-            size={dense ? 'small' : 'medium'}
+            size='small'
             aria-label="enhanced table"
           >
             <EnhancedTableHead
@@ -259,10 +361,10 @@ export default function MedicsTable(props) {
               orderBy={orderBy}
               onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
-              rowCount={rows.length}
+              rowCount={toShowRows.length}
             />
             <TableBody>
-              {stableSort(rows, getComparator(order, orderBy))
+              {stableSort(toShowRows, getComparator(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => {
                   const isItemSelected = isSelected(row.name);
@@ -289,7 +391,7 @@ export default function MedicsTable(props) {
                       <TableCell align="right">{row.birthdate}</TableCell>
                       <TableCell align="right">
                         <Avatar alt="Profile Picture" src={row.profilePic} />
-                        </TableCell>
+                      </TableCell>
                       <TableCell>
                         <ul>
                           {row.medical_specialities.map(s => (
@@ -304,7 +406,7 @@ export default function MedicsTable(props) {
                   );
                 })}
               {emptyRows > 0 && (
-                <TableRow style={{ height: (dense ? 33 : 53) * emptyRows }}>
+                <TableRow style={{ height: 33 * emptyRows }}>
                   <TableCell colSpan={10} />
                 </TableRow>
               )}
@@ -312,19 +414,15 @@ export default function MedicsTable(props) {
           </Table>
         </TableContainer>
         <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
+          rowsPerPageOptions={[1,5, 10, 15, 20]}
           component="div"
-          count={rows.length}
+          count={toShowRows.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onChangePage={handleChangePage}
           onChangeRowsPerPage={handleChangeRowsPerPage}
         />
       </Paper>
-      <FormControlLabel
-        control={<Switch checked={dense} onChange={handleChangeDense} />}
-        label="Dense padding"
-      />
     </div>
   );
 }
