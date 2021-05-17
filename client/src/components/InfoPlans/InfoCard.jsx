@@ -92,11 +92,11 @@ export default function InfoCard(props) {
     return (
         <Card className={classes.root}>
             <CardActionArea>
-                <CardMedia
+                {/* <CardMedia
                     className={(classes.media, styles.picture)}
                     image={logoNav}
                     title='Logo'
-                />
+                /> */}
                 <CardContent>
                     <Typography
                         className={styles.title}
